@@ -36,7 +36,7 @@ Gunakan kredensial berikut untuk masuk ke dalam sistem saat pertama kali dijalan
     *   Password: Admin#12345
 *   **Petugas Gudang**
     *   Username: Kang_Gudang
-    *   Password: Gudang#12345[cite: 4]
+    *   Password: Gudang#12345
 *   **Kasir**
-    *   Username: Mbak_Kasir[cite: 4]
-    *   Password: Kasir#12345[cite: 4]
+    *   Username: Mbak_Kasir
+    *   Password: Kasir#12345
