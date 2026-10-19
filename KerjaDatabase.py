@@ -173,8 +173,8 @@ def BucketSort(IsiKategori1, descending=False):
 
     return hasil_akhir
 
-def urutygy(descending=False):
-    Sementara = spilstok("Admin")
+def urutygy(job, descending=False):
+    Sementara = spilstok(job)
     semua_barang = {}
 
     for _, IsiKategori in Sementara.items():
@@ -243,6 +243,8 @@ def transaksi(jumlahbeli, aidibrg):
     for _, lain1 in ambil.items():
         for aidi, lain2 in lain1.items():
             if aidi==aidibrg:
+                if lain2['Kondisi']==0:
+                    return ringkas
                 if lain2['Stok']>=jumlahbeli:
                     lain2['Stok']-=jumlahbeli
                     simpanstok(ambil)
@@ -257,7 +259,7 @@ def hitungharga(jumlah, hargabrg):
     return ringkas
 
 def keranjangnya(idygy, keranjang, beli, akhir):
-    z=spilstok(0)
+    z=spilstok("Admin")
     ditemukan = False
     for _, ntar in z.items():
         for idi, sisay in ntar.items():

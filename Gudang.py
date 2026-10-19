@@ -1,3 +1,4 @@
+from ast import While
 import sys
 
 import KerjaDatabase
@@ -22,7 +23,7 @@ def Gudangnya(role):
                 print("1= Data Barang")
                 print("2= Edit Stok Barang")
                 print("3= Tambahkan Barang Baru")
-                print("4= Hapus Barang (Nonaktifkan)")
+                print("4= Aktifkan atau Nonakifkan barang")
                 print("0= Keluar Menu\n")
                 tugas=input()
                 match tugas:
@@ -34,7 +35,7 @@ def Gudangnya(role):
                         metode = input("Masukkan pilihan:\n")
                         if metode == "1" or metode == "2":
                             status_descending = True if metode == "2" else False
-                            barang_terurut = KerjaDatabase.urutygy(descending=status_descending)
+                            barang_terurut = KerjaDatabase.urutygy(role, descending=status_descending)
                             print("\n=== DAFTAR SELURUH BARANG SMK MART ===")
                             for Aidi, detail in barang_terurut:
                                 print(f"[{Aidi}] {detail['Nama Barang']}")
@@ -105,7 +106,21 @@ def Gudangnya(role):
                     case "3":
                         KerjaDatabase.nambahbarang()
                     case "4":
-                        KerjaDatabase.hapusbarang()
+                        while True:
+                            try:
+                                opsi4=int(input("Ingin menghapus atau mengaktifkan barang?\n1= Hapus\n2= Aktifkan\n0= Keluar\n\n"))
+                            except ValueError:
+                                print("Masukkan angka")
+                                continue
+                            match opsi4:
+                                case 1:
+                                    KerjaDatabase.hapusbarang()
+                                case 2:
+                                    KerjaDatabase.diaktifkan()
+                                case 0:
+                                    break
+                                case _:
+                                    print("Masukkan antara angka 1, 2, atau 0!")
                     case "0":
                         sys.exit()
                     case _:
