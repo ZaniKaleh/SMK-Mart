@@ -1,0 +1,16 @@
+alat tulis|AT001|Bolpoin|17|2000|10|1
+alat tulis|AT002|Pensil|30|1500|10|1
+alat tulis|AT003|Tipex|19|3000|10|1
+alat tulis|AT004|Penghapus Pensil|39|1000|10|1
+alat tulis|AT005|Penggaris|18|5000|10|1
+sembako|SM001|Beras|11|16000|10|1
+sembako|SM002|Minyak|23|7000|10|1
+sembako|SM003|Gula Pasir|20|5000|10|1
+alat kebersihan|AK001|Sabun Mandi (Batang)|24|2500|10|1
+alat kebersihan|AK002|Sabun Cuci Piring|12|3000|10|1
+alat kebersihan|AK003|Sabun Cuci Baju (5 Sachet)|24|5000|20|1
+alat kebersihan|AK004|Shampoo (5 Sachet)|40|2500|20|1
+kendaraan|KN001|Sepeda|16|1700000|2|1
+kendaraan|KN002|Mobil|6|45000000|2|1
+snack|SN001|Mentos|70|3000|10|0
+snack|SK002|MBG Beracun 60 abad|12|666666|1|1

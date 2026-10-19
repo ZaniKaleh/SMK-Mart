@@ -1,0 +1,6 @@
+673245|Kang_Admin|Admin|Admin#12345|1
+673211|Kang_Gudang|Pengelola Gudang|Gudang#12345|1
+673240|Mbak_Kasir|Kasir|Kasir#12345|1
+689445|Mbak_Admin|Admin|Admin#12345|1
+689223|Mbak_Gudang|Pengelola Gudang|Gudang#12345|1
+689421|Kang_Kasir|Kasir|Kasir#12345|1

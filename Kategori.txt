@@ -1,0 +1,5 @@
+alat tulis|AT
+sembako|SM
+alat kebersihan|AK
+kendaraan|KN
+snack|SK
