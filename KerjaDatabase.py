@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import random
 
 def spilstok(job):
     stok = {}
@@ -56,11 +56,26 @@ def spiluser():
 
 def tambahuser():
     print("\n== Tambah User Baru ==")
-    aidi = input("Masukkan ID User (contoh: 123456):\n")
-    uname = input("Masukkan Username:\n")
-    role = input("Masukkan Role (Admin/Kasir/Pengelola Gudang):\n")
-    pwd = input("Masukkan Password:\n")
+    uname = input("Masukkan Username:\n").strip()
+    role = input("Masukkan Role (Admin/Kasir/Pengelola Gudang):\n").strip()
+    pwd = input("Masukkan Password:\n").strip()
+    if uname=="" or role=="" or pwd=="":
+        print("Semua kolom harus diisi")
+        return
+    elif "|" in uname or "|" in pwd or "|" in role:
+        print("Nama, Role, atau Password tidak boleh mengandung '|'!")
+        return
     users = spiluser()
+    yangada=True
+    while True:
+        aidi=str(random.randrange(100000,1000000))
+        yangada=False
+        for iduser in users.keys():
+            if iduser.strip()==aidi:
+                yangada=True
+                break
+        if yangada==False:
+            break
     users[aidi] = {"Username": uname, "Role": role, "Password": pwd}
 
     with open('User.txt', 'w') as file:
