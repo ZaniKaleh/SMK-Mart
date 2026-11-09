@@ -68,7 +68,7 @@ def tambahuser():
     users = spiluser()
     yangada=True
     while True:
-        aidi=str(random.randrange(100000,1000000))
+        aidi=str(random.randrange(100000,999999))
         yangada=False
         for iduser in users.keys():
             if iduser.strip()==aidi:
@@ -368,7 +368,7 @@ def nambahbarang():
                     break
 
             with open("Kategori.txt", "a") as file_kat_append:
-                file_kat_append.write(f"{kat}|{inisial}\n")
+                file_kat_append.write(f"\n{kat}|{inisial}\n")
 
             kat_dict[kat] = inisial
             print(f">> Kategori '{kat.title()}' berhasil disimpan!")

@@ -14,3 +14,5 @@ kendaraan|KN001|Sepeda|16|1700000|2|1
 kendaraan|KN002|Mobil|6|45000000|2|1
 snack|SK001|Mentos|70|3000|10|0
 snack|SK002|MBG Beracun 60 abad|12|666666|1|1
+obat|OB001|Promag|9|5000|5|1
+furnitur|FNT001|Meja|10|2000000|2|0
