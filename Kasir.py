@@ -3,20 +3,6 @@ from ast import While
 import KerjaDatabase
 
 
-def MKasir():
-    while True:
-        role = "Kasir"
-        print("\nMasukkan Username Kasir:\n")
-        username = input()
-        print("\nMasukkan Password Kasir:\n")
-        password = input()
-        validasiuser = KerjaDatabase.login(username, password, role)
-
-        if validasiuser == True:
-            Kasirnya(role, username)
-        elif validasiuser == False:
-            print("Username, Password, atau Role anda tidak valid!")
-
 def Kasirnya(role,username):
         print("\n---------Selamat Datang di Bagian Kasir---------")
         keranjang = []
@@ -41,7 +27,7 @@ def Kasirnya(role,username):
                                 print(f"[{idi}] {laina['Nama Barang']}")
                                 print(f"      Stok  : {laina['Stok']}")
                                 print(f"      Harga : Rp {laina['Harga']:,.0f}".replace(",", "."))
-                                if role=="Admin":
+                                if role=="ADMIN":
                                     if laina['Kondisi']==1:
                                         print("      Status: Aktif")
                                     if laina['Kondisi']==0:
@@ -57,7 +43,7 @@ def Kasirnya(role,username):
                                     print(f"[{idi}] {laina['Nama Barang']}")
                                     print(f"      Stok  : {laina['Stok']}")
                                     print(f"      Harga : Rp {laina['Harga']:,.0f}".replace(",", "."))
-                                    if role=="Admin":
+                                    if role=="ADMIN":
                                         if laina['Kondisi']==1:
                                             print("      Status: Aktif")
                                         if laina['Kondisi']==0:

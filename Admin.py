@@ -3,16 +3,8 @@ import Gudang
 import Kasir
 import sys
 
-def MAdmin():
-    role="Admin"
+def punyaadmin(username, role):
     while True:
-        print("\nMasukkan Username Admin:\n")
-        username=input()
-        print("\nMasukkan Password Admin:\n")
-        password = input()
-        validasiuser=KerjaDatabase.login(username,password,role)
-        if validasiuser == True:
-            while True:
                 print("---------Selamat Datang di Kontrol Admin---------")
                 print("Tugas apa yang ingin dilakukan?")
                 print("1= Manajemen User (Lihat/Tambah/Hapus)")
@@ -23,23 +15,25 @@ def MAdmin():
                 match tugasadmin:
                     case "1":
                         while tugasadmin=="1":
-                            print("\n1. Lihat User\n2. Tambah User\n3. Hapus User\n0. Kembali\n")
+                            print("\n1. Lihat User\n2. Tambah User\n3. Hapus User\n4. Aktifkan User\n0. Kembali\n")
                             pilih = input("Pilih aksi:\n")
                             if pilih == "1":
                                 daftaruser=KerjaDatabase.spiluser()
                                 for AidiUser, lainUser in daftaruser.items():
-                                    print(f"\nID User: {AidiUser}")
-                                    print(f"Username: {lainUser['Username']}")
-                                    print(f"Password: {lainUser['Password']}")
-                                    print(f"Role: {lainUser['Role']}")
                                     if lainUser.get('Kondisi')=="1":
+                                        print(f"\nID User: {AidiUser}")
+                                        print(f"Username: {lainUser['Username']}")
+                                        print(f"Password: {lainUser['Password']}")
+                                        print(f"Role: {lainUser['Role']}")
                                         print("Kondisi: Aktif")
                                     elif lainUser.get('Kondisi')=="0":
-                                        print("Kondisi: Nonaktif")
+                                        pass
                             elif pilih.strip()== "2":
                                 KerjaDatabase.tambahuser()
                             elif pilih.strip()== "3":
                                 KerjaDatabase.hapususer()
+                            elif pilih.strip()=="4":
+                                KerjaDatabase.diaktifkanuser()
                             elif pilih.strip()=="0":
                                 break
                             else:
@@ -74,6 +68,3 @@ def MAdmin():
                         sys.exit()
                     case _:
                         print("Input tidak valid!")
-            break
-        elif validasiuser==False:
-            print("Username, Password, atau Role Anda tidak valid!")

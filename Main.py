@@ -1,22 +1,22 @@
 import Admin
 import Gudang
 import Kasir
+import KerjaDatabase
 
 print("===========================================================================")
 print("                       Selamat Datang di SMK MART              ")
 print("===========================================================================")
 while True:
-    print("Siapakah anda? \n1=Admin \n2=Kasir \n3=Petugas Gudang")
-    role = input("\n")
-    match role:
-        case "1":
-            Admin.MAdmin()
-            break
-        case "2":
-            Kasir.MKasir()
-            break
-        case "3":
-            Gudang.MGudang()
-            break
-        case _:
-            print("Masukkan input yang valid!")
+    print("\nMasukkan Username Anda:\n")
+    username=input()
+    print("\nMasukkan Password Anda:\n")
+    password = input()
+    validasiuser=KerjaDatabase.login(username,password)
+    if validasiuser =="YaAdmin" :
+        Admin.punyaadmin(username, "Admin")
+    elif validasiuser=="YaKasir":
+        Kasir.Kasirnya("Kasir", username)
+    elif validasiuser=="YaGudang":
+        Gudang.Gudangnya("Pengelola Gudang")
+    else:
+        print("Username, Password, atau Role Anda tidak valid!")

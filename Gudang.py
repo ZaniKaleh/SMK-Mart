@@ -4,18 +4,6 @@ import sys
 import KerjaDatabase
 
 
-def MGudang():
-    role="Pengelola Gudang"
-    while True:
-        print("\nMasukkan Username Gudang:\n")
-        username=input()
-        print("\nMasukkan Password Gudang:\n")
-        password = input()
-        validasiuser=KerjaDatabase.login(username,password,role)
-        if validasiuser == True:
-            Gudangnya(role)
-        else:
-            print("Username, Password, atau Role Anda tidak valid!")
 def Gudangnya(role):
         while True:
                 print("\n---------Selamat Datang di Bagian Gudang---------")
@@ -41,7 +29,7 @@ def Gudangnya(role):
                                 print(f"[{Aidi}] {detail['Nama Barang']}")
                                 print(f"      Stok  : {detail['Stok']}")
                                 print(f"      Harga : Rp {detail['Harga']:,.0f}".replace(",", "."))
-                                if role=="Admin":
+                                if role=="ADMIN":
                                     if detail['Kondisi']==1:
                                         print("      Status: Aktif")
                                     elif detail['Kondisi']==0:
@@ -57,7 +45,7 @@ def Gudangnya(role):
                                     print(f"[{Aidi}] {detail['Nama Barang']}")
                                     print(f"      Stok  : {detail['Stok']} pcs")
                                     print(f"      Harga : Rp {detail['Harga']:,.0f}".replace(",", "."))
-                                    if role=="Admin":
+                                    if role=="ADMIN":
                                         if detail['Kondisi']==1:
                                             print("      Status: Aktif")
                                         elif detail['Kondisi']==0:
@@ -72,7 +60,7 @@ def Gudangnya(role):
                                 print(f"      Stok  : {detail['Stok']}")
                                 print(f"      Harga : Rp {detail['Harga']:,.0f}".replace(",", "."))
                                 print(f"Stok Minimum: {detail['Stok Minimum']}")
-                                if role=="Admin":
+                                if role=="ADMIN":
                                     if detail['Kondisi']==1:
                                         print("      Status: Aktif")
                                     if detail['Kondisi']==0:
@@ -91,7 +79,7 @@ def Gudangnya(role):
                                             print(f"\n[{Aidi}] {detail['Nama Barang']}")
                                             print(f"      Stok  : {detail['Stok']}")
                                             print(f"      Harga : Rp {detail['Harga']:,.0f}".replace(",", "."))
-                                            if role=="Admin":
+                                            if role=="ADMIN":
                                                 if detail['Kondisi']==1:
                                                     print("      Status: Aktif")
                                                 if detail['Kondisi']==0:

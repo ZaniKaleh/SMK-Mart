@@ -1,3 +1,4 @@
+from ast import While
 from datetime import datetime
 import random
 
@@ -16,7 +17,7 @@ def spilstok(job):
                     stok_min = int(parts[5])
                     aktif = int(parts[6]) if len(parts) > 6 else 1
 
-                    if job != "Admin" and aktif==0:
+                    if job != "ADMIN" and aktif==0:
                         continue
 
                     if kat not in stok:
@@ -43,7 +44,7 @@ def spiluser():
                     uname = parts[1]
                     role = parts[2]
                     pwd = parts[3]
-                    kondisi = parts[4] if len(parts) > 4 else "1"
+                    kondisi = parts[4]
                     users[aidi] = {
                         "Username": uname,
                         "Role": role,
@@ -55,16 +56,23 @@ def spiluser():
     return users
 
 def tambahuser():
-    print("\n== Tambah User Baru ==")
-    uname = input("Masukkan Username:\n").strip()
-    role = input("Masukkan Role (Admin/Kasir/Pengelola Gudang):\n").strip()
-    pwd = input("Masukkan Password:\n").strip()
-    if uname=="" or role=="" or pwd=="":
-        print("Semua kolom harus diisi")
-        return
-    elif "|" in uname or "|" in pwd or "|" in role:
-        print("Nama, Role, atau Password tidak boleh mengandung '|'!")
-        return
+    while True:
+        print("\n== Tambah User Baru ==")
+        uname = input("\n0 untuk keluar\nMasukkan Username:\n").strip()
+        if uname=="0".strip():
+            return
+        role = input("Masukkan Role (Admin/Kasir/Pengelola Gudang):\n").upper().strip()
+        if role=="ADMIN" or role=="KASIR" or role=="PENGELOLA GUDANG":
+            pwd = input("Masukkan Password:\n").strip()
+            if uname=="" or role=="" or pwd=="":
+                print("Semua kolom harus diisi")
+            elif "|" in uname or "|" in pwd or "|" in role:
+                print("Nama, Role, atau Password tidak boleh mengandung '|'!")
+            else:
+                break
+        else:
+            print("Pilih salah satu di antara Admin, Kasir, atau Pengelola Gudang!")
+            continue
     users = spiluser()
     yangada=True
     while True:
@@ -84,17 +92,22 @@ def tambahuser():
     print("User berhasil ditambahkan!")
 
 def hapususer():
-    print("\n== Hapus User ==")
-    aidi_hapus = input("Masukkan ID User yang akan dihapus:\n")
-    users = spiluser()
-    if aidi_hapus in users:
-        del users[aidi_hapus]
-        with open('User.txt', 'w') as file:
-            for id_u, det in users.items():
-                file.writelines(f"{id_u}|{det['Username']}|{det['Role']}|{det['Password']}|{det.get('Kondisi', '1')}\n")
-        print("User berhasil dihapus dari sistem!")
-    else:
-        print("ID User tidak ditemukan!")
+    while True:
+        print("\n== Hapus User ==")
+        aidi_hapus = input("Masukkan ID User yang akan dihapus\n0 untuk keluar\n")
+        if aidi_hapus=="0".strip():
+            return
+        users = spiluser()
+        for aidi, ditel in users.items():
+            if aidi_hapus in aidi:
+                ditel['Kondisi']="0"
+                with open('User.txt', 'w') as file:
+                    for id_u, det in users.items():
+                        file.writelines(f"{id_u}|{det['Username']}|{det['Role']}|{det['Password']}|{det.get('Kondisi', '1')}\n")
+                print("User berhasil dihapus dari sistem!")
+                return
+            else:
+                print("ID User tidak ditemukan!")
 
 def spillaporan():
     laporan = {}
@@ -197,18 +210,24 @@ def urutygy(job, descending=False):
 
     return BucketSort(semua_barang, descending=descending)
 
-def login(usernamecek,passwordcek,rolecek):
+def login(usernamecek,passwordcek):
     loginkan=spiluser()
-    kondisilogin=False
+    kondisilogin=""
     for _, detailuser in loginkan.items():
         if detailuser['Username']==usernamecek and detailuser['Password']==passwordcek:
-            if detailuser['Role']==rolecek or detailuser['Role']=="Admin":
-                kondisilogin=True
+            if detailuser['Role'].upper()=="Admin".upper():
+                kondisilogin="YaAdmin"
+                break
+            elif detailuser['Role'].upper()=="Kasir".upper():
+                kondisilogin="YaKasir"
+                break
+            elif detailuser['Role'].upper()=="Pengelola Gudang".upper():
+                kondisilogin="YaGudang"
                 break
     return kondisilogin
 
 def editbarang(Aidibarang, editstok):
-    cekdata=spilstok("Admin")
+    cekdata=spilstok("ADMIN")
     berhasiledit="IDgagal"
     for _, detailygy in cekdata.items():
         for AidiT, ditel in detailygy.items():
@@ -228,7 +247,7 @@ def editbarang(Aidibarang, editstok):
 def hapusbarang():
     print("\n== Nonaktifkan Barang ==")
     Aidibarang = input("Masukkan ID barang yang ingin dinonaktifkan:\n").upper()
-    cekdata = spilstok("Admin")
+    cekdata = spilstok("ADMIN")
     ditemukan = False
     for isikategori in cekdata.values():
         if Aidibarang in isikategori:
@@ -253,7 +272,7 @@ def serch(Aidibarang):
     return None
 
 def transaksi(jumlahbeli, aidibrg):
-    ambil=spilstok("Admin")
+    ambil=spilstok("ADMIN")
     ringkas=0
     for _, lain1 in ambil.items():
         for aidi, lain2 in lain1.items():
@@ -274,7 +293,7 @@ def hitungharga(jumlah, hargabrg):
     return ringkas
 
 def keranjangnya(idygy, keranjang, beli, akhir):
-    z=spilstok("Admin")
+    z=spilstok("ADMIN")
     ditemukan = False
     for _, ntar in z.items():
         for idi, sisay in ntar.items():
@@ -359,11 +378,15 @@ def nambahbarang():
             inisial = kat_dict[kat]
         else:
             while True:
-                inisial = input(f"Masukkan inisial untuk {kat.title()} (contoh: MN):\n").upper()
+                inisial = input(f"Masukkan inisial untuk {kat.title()} (contoh: MNM):\n").upper()
                 if inisial in kat_dict.values():
                     print("Inisial tersebut sudah digunakan! Gunakan inisial yang berbeda.")
                 elif len(inisial) == 0:
                     print("Inisial tidak boleh kosong!")
+                elif len(inisial)<3:
+                    print("Inisal tidak boleh kurang dari 3!")
+                elif len(inisial)>3:
+                    print("Inisial tidak boleh lebih dari 3!")
                 else:
                     break
 
@@ -379,7 +402,7 @@ def nambahbarang():
     else:
         inisial = kat_dict[kat]
 
-    stok=spilstok("Admin")
+    stok=spilstok("ADMIN")
 
     maks_id = 0
     if kat in stok:
@@ -456,7 +479,7 @@ def laporan(bulan):
         print(f"Tidak ada data laporan penjualan untuk tanggal {bulan}.")
 
 def hapuskeranjang(ygdihapus, IDdihapus):
-    cek=spilstok("Admin")
+    cek=spilstok("ADMIN")
     for _, iye in cek.items():
         for aidi, lain in iye.items():
             if aidi==IDdihapus:

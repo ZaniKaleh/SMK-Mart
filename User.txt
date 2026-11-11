@@ -1,6 +1,7 @@
-673245|Kang_Admin|Admin|Admin#12345|1
-673211|Kang_Gudang|Pengelola Gudang|Gudang#12345|1
-673240|Mbak_Kasir|Kasir|Kasir#12345|1
-689445|Mbak_Admin|Admin|Admin#12345|1
-689223|Mbak_Gudang|Pengelola Gudang|Gudang#12345|1
-689421|Kang_Kasir|Kasir|Kasir#12345|1
+673245|Kang_Admin|ADMIN|Admin#12345|1
+673211|Kang_Gudang|PENGELOLA GUDANG|Gudang#12345|1
+673240|Mbak_Kasir|KASIR|Kasir#12345|1
+689445|Mbak_Admin|ADMIN|Admin#12345|1
+689223|Mbak_Gudang|PENGELOLA GUDANG|Gudang#12345|1
+689421|Kang_Kasir|KASIR|Kasir#12345|1
+999791|Kang_Suki|KASIR|Kasir#12345|1

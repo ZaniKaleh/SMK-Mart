@@ -1,8 +1,8 @@
-alat tulis|AT
-sembako|SM
-alat kebersihan|AK
-kendaraan|KN
-snack|SK
-obat|OB
+alat tulis|ATS
+sembako|SMB
+alat kebersihan|AKN
+kendaraan|KND
+snack|SNK
+obat|OBT
 
 furnitur|FNT
