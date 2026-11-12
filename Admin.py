@@ -17,22 +17,39 @@ def punyaadmin(username, role):
                         while tugasadmin=="1":
                             print("\n1. Lihat User\n2. Tambah User\n3. Hapus User\n4. Aktifkan User\n0. Kembali\n")
                             pilih = input("Pilih aksi:\n")
+                            daftaruser=KerjaDatabase.spiluser("Pos")
                             if pilih == "1":
-                                daftaruser=KerjaDatabase.spiluser()
-                                for AidiUser, lainUser in daftaruser.items():
-                                    if lainUser.get('Kondisi')=="1":
-                                        print(f"\nID User: {AidiUser}")
-                                        print(f"Username: {lainUser['Username']}")
-                                        print(f"Password: {lainUser['Password']}")
-                                        print(f"Role: {lainUser['Role']}")
-                                        print("Kondisi: Aktif")
-                                    elif lainUser.get('Kondisi')=="0":
-                                        pass
+                                if len(daftaruser)<=0:
+                                    print("Tidak terdapat User!")
+                                else:
+                                    print("\n====================== DAFTAR USER SMK MART ======================")
+                                    print(f"{'ID USER':<10} | {'USERNAME':<18} | {'ROLE':<20} | {'KONDISI':<10}")
+                                    print("-"*67)
+                                    for AidiUser, lainUser in daftaruser.items():
+                                        kondisiuser = "Aktif"
+                                        print(f"{AidiUser:<10} | {lainUser['Username']:<18} | {lainUser['Role']:<20} | {kondisiuser:<10}")
+                                print("="*67+"\n")
                             elif pilih.strip()== "2":
                                 KerjaDatabase.tambahuser()
                             elif pilih.strip()== "3":
+                                if len(daftaruser)<=0:
+                                    print("Tidak terdapat User!")
+                                else:
+                                    print("\n====================== DAFTAR USER SMK MART ======================")
+                                    print(f"{'ID USER':<10} | {'USERNAME':<18} | {'ROLE':<20} | {'KONDISI':<10}")
+                                    print("-"*67)
+                                    for AidiUser, lainUser in daftaruser.items():
+                                        kondisiuser = "Aktif"
+                                        print(f"{AidiUser:<10} | {lainUser['Username']:<18} | {lainUser['Role']:<20} | {kondisiuser:<10}")
                                 KerjaDatabase.hapususer()
                             elif pilih.strip()=="4":
+                                balikdaftar=KerjaDatabase.spiluser("Neg")
+                                print("\n====================== DAFTAR USER SMK MART ======================")
+                                print(f"{'ID USER':<10} | {'USERNAME':<18} | {'ROLE':<20} | {'KONDISI':<10}")
+                                print("-"*67)
+                                for AidiUser, lainUser in balikdaftar.items():
+                                    kondisiuser = "Aktif"
+                                    print(f"{AidiUser:<10} | {lainUser['Username']:<18} | {lainUser['Role']:<20} | {kondisiuser:<10}")
                                 KerjaDatabase.diaktifkanuser()
                             elif pilih.strip()=="0":
                                 break

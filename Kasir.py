@@ -1,4 +1,5 @@
 from ast import While
+from pprint import PrettyPrinter
 
 import KerjaDatabase
 
@@ -22,34 +23,39 @@ def Kasirnya(role,username):
                     f = KerjaDatabase.spilstok(role)
                     if kata_kunci=="0":
                         for kat, det in f.items():
-                            print(f"\n>> {kat.upper()}")
+                            print(f"\n>> Kategori: {kat.upper()}")
+                            print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STATUS':<10}")
+                            print("-"*88)
                             for idi, laina in det.items():
-                                print(f"[{idi}] {laina['Nama Barang']}")
-                                print(f"      Stok  : {laina['Stok']}")
-                                print(f"      Harga : Rp {laina['Harga']:,.0f}".replace(",", "."))
+                                harga = f"Rp {laina['Harga']:,.0f}".replace(",", ".")
+                                status = "Aktif" if laina['Kondisi']==1 else "Nonaktif"
                                 if role=="ADMIN":
-                                    if laina['Kondisi']==1:
-                                        print("      Status: Aktif")
-                                    if laina['Kondisi']==0:
-                                        print("      Status: Nonaktif")
+                                    print(f"{idi:<10} | {laina['Nama Barang']:<30} | {laina['Stok']:>6} pcs | {harga:>16} | {status:<10}")
+                                else:
+                                    print(f"{idi:<10} | {laina['Nama Barang']:<30} | {laina['Stok']:>6} pcs | {harga:>16} | {'':<10}")
                     elif kata_kunci.strip()=="999":
                         break
 
                     else:
+                        ditemukan = False
                         for kat, det in f.items():
-                            print(f"\n>> {kat.upper()}")
+                            kategori_ditemukan = False
                             for idi, laina in det.items():
                                 if kata_kunci in idi.lower() or kata_kunci in laina['Nama Barang'].lower():
-                                    print(f"[{idi}] {laina['Nama Barang']}")
-                                    print(f"      Stok  : {laina['Stok']}")
-                                    print(f"      Harga : Rp {laina['Harga']:,.0f}".replace(",", "."))
+                                    if kategori_ditemukan==False:
+                                        print(f"\n>> Kategori: {kat.upper()}")
+                                        print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STATUS':<10}")
+                                        print("-"*88)
+                                        kategori_ditemukan = True
+                                    harga = f"Rp {laina['Harga']:,.0f}".replace(",", ".")
+                                    status = "Aktif" if laina['Kondisi']==1 else "Nonaktif"
                                     if role=="ADMIN":
-                                        if laina['Kondisi']==1:
-                                            print("      Status: Aktif")
-                                        if laina['Kondisi']==0:
-                                            print("      Status: Nonaktif")
-                                else:
-                                    print("Barang tidak ditemukan!")
+                                        print(f"{idi:<10} | {laina['Nama Barang']:<30} | {laina['Stok']:>6} pcs | {harga:>16} | {status:<10}")
+                                    else:
+                                        print(f"{idi:<10} | {laina['Nama Barang']:<30} | {laina['Stok']:>6} pcs | {harga:>16} | {'':<10}")
+                                    ditemukan = True
+                        if ditemukan==False:
+                            print("Barang tidak ditemukan!")
             elif opsi == "2":
                 Belilagi=True
                 while Belilagi==True:
@@ -73,56 +79,43 @@ def Kasirnya(role,username):
                                 total += akhir
                                 print(f"\nBarang ditambahkan ke keranjang. Subtotal item ini: Rp {akhir:,.0f}".replace(",", "."))
                                 print(f"Total sementara: Rp {total:,.0f}".replace(",", "."))
-
+                                if len(keranjang)>0:
+                                    print("\n--- Isi Keranjang Sementara ---")
+                                    for isi in keranjang:
+                                        for idb, detail in isi.items():
+                                            print(f"[{idb}] {detail['Nama Barang']} | Jumlah: {detail['Jumlah dibeli']} | Harga: Rp {detail['Harga']:,.0f}".replace(",", "."))
+                                    print(f"Total sementara: Rp {total:,.0f}".replace(",", "."))
+                                elif len(keranjang)<=0:
+                                    print("\nKeranjang saat ini sedang kosong!")
                                 lagi = input(
-                                    "Apakah pelanggan ingin membeli lagi?\n1= Ya\n2= Tidak\n3= Lihat keranjang\n"
+                                    "Apakah pelanggan ingin membeli lagi?\n1= Ya\n2= Tidak\n3= Hapus Barang di keranjang\n"
                                 )
                                 match lagi:
                                     case "2":
-                                        selesai_belanja = True
                                         Belilagi=False
                                         break
                                     case "1":
                                         continue
                                     case "3":
-                                        while lagi == "3":
-                                            if len(keranjang)>0:
-                                                print("\n--- Isi Keranjang Sementara ---")
-                                                for isi in keranjang:
-                                                    for idb, detail in isi.items():
-                                                        print(f"[{idb}] {detail['Nama Barang']} | Jumlah: {detail['Jumlah dibeli']} | Harga: Rp {detail['Harga']:,.0f}".replace(",", "."))
-                                                print(f"Total sementara: Rp {total:,.0f}".replace(",", "."))
-                                            elif len(keranjang)<=0:
-                                                print("Keranjang saat ini sedang kosong!")
-                                            lagi1 = input("\nApakah pelanggan ingin membeli lagi?\n1= Ya\n2= Tidak\n3= Hapus barang di keranjang\n")
-                                            match lagi1:
-                                                case "1":
-                                                    break
-                                                case "2":
-                                                    selesai_belanja=True
-                                                    Belilagi=False
-                                                    break
-                                                case "3":
-                                                    if len(keranjang)==0:
-                                                        print("Keranjang saat ini sedang kosong!")
-                                                    else:
-                                                        idkeranjang=input("Masukkan ID barang di keranjang yang ingin dihapus!\n")
-                                                        for isi in keranjang:
-                                                            for idb, detail in isi.items():
-                                                                if idkeranjang==idb:
-                                                                    jumlahdikurangi=input("Berapa jumlah yang ingin dikurangi?\n")
-                                                                    if jumlahdikurangi<=detail['Jumlah dibeli']:
-                                                                        hasilkeranjang=KerjaDatabase.hapuskeranjang(jumlahdikurangi, idkeranjang)
-                                                                        if hasilkeranjang==True:
-                                                                            print("Berhasil menghapus barang dari keranjang!")
-                                                                        elif hasilkeranjang==False:
-                                                                            print("Gagal menghapus!")
-                                                                    elif jumlahdikurangi>detail['Stok']:
-                                                                        print("Jumlah yang dikurangi melebihi jumlah di keranjang!")
+                                        if len(keranjang)==0:
+                                            print("Keranjang saat ini sedang kosong!")
+                                        else:
+                                            idkeranjang=input("Masukkan ID barang di keranjang yang ingin dihapus!\n")
+                                            for isi in keranjang:
+                                                for idb, detail in isi.items():
+                                                    if idkeranjang==idb:
+                                                        jumlahdikurangi=input("Berapa jumlah yang ingin dikurangi?\n")
+                                                        if jumlahdikurangi<=detail['Jumlah dibeli']:
+                                                            hasilkeranjang=KerjaDatabase.hapuskeranjang(jumlahdikurangi, idkeranjang)
+                                                            if hasilkeranjang==True:
+                                                                print("Berhasil menghapus barang dari keranjang!")
+                                                            elif hasilkeranjang==False:
+                                                                print("Gagal menghapus!")
+                                                        elif jumlahdikurangi>detail['Stok']:
+                                                            print("Jumlah yang dikurangi melebihi jumlah di keranjang!")
 
                                     case _:
                                         print("Input tidak valid!")
-
                         else:
                             print("Jumlah barang harus lebih dari 0!")
                     else:
@@ -131,26 +124,40 @@ def Kasirnya(role,username):
                         break
             else:
                 print("Opsi tidak valid!")
-            if selesai_belanja==True:
-                break
-        if len(keranjang) > 0:
-            print("\n================ PEMBAYARAN ================")
-            print(f"Total Belanja yang harus dibayar : Rp {total:,.0f}".replace(",", "."))
-            while True:
-                try:
-                    uang_pembeli = int(input("Masukkan jumlah uang tunai pembeli : Rp "))
-                    if uang_pembeli < total:
-                        kurang = total - uang_pembeli
-                        print(f"Maaf, uang pembeli kurang Rp {kurang:,.0f}".replace(",", "."))
-                    elif uang_pembeli==total:
-                        print("Uang pembeli pas!")
-                        kembalian=0
-                        break
-                    else:
-                        kembalian = uang_pembeli - total
-                        print(f"Kembalian yang harus diberikan   : Rp {kembalian:,.0f}".replace(",", "."))
-                        break
-                except ValueError:
-                    print("Harap masukkan angka nominal uang yang valid!")
+            if len(keranjang) > 0:
+                print("\n================ PEMBAYARAN ================")
+                print(f"Total Belanja yang harus dibayar : Rp {total:,.0f}".replace(",", "."))
+                while True:
+                    try:
+                        uang_pembeli = int(input("Masukkan jumlah uang tunai pembeli : Rp "))
+                        if uang_pembeli < total:
+                            kurang = total - uang_pembeli
+                            print(f"Maaf, uang pembeli kurang Rp {kurang:,.0f}".replace(",", "."))
+                        elif uang_pembeli==total:
+                            print("Uang pembeli pas!")
+                            kembalian=0
+                            break
+                        else:
+                            kembalian = uang_pembeli - total
+                            print(f"Kembalian yang harus diberikan   : Rp {kembalian:,.0f}".replace(",", "."))
+                            break
+                    except ValueError:
+                        print("Harap masukkan angka nominal uang yang valid!")
 
-            KerjaDatabase.strok(username, keranjang, total, uang_pembeli, kembalian)
+                KerjaDatabase.strok(username, keranjang, total, uang_pembeli, kembalian)
+                while True:
+                    pembeli=input("Apakah ada pembeli lagi? (Y/n)\n").upper().strip()
+                    match pembeli:
+                        case "Y":
+                            break
+                        case "":
+                            break
+                        case "N":
+                            selesai_belanja=True
+                            break
+                        case _:
+                            print("Masukkan input yang valid!")
+                if selesai_belanja==True:
+                    break
+                else:
+                    pass

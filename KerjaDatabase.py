@@ -2,6 +2,8 @@ from ast import While
 from datetime import datetime
 import random
 
+from Main import username
+
 def spilstok(job):
     stok = {}
     try:
@@ -33,7 +35,7 @@ def spilstok(job):
         pass
     return stok
 
-def spiluser():
+def spiluser(Tanda):
     users = {}
     try:
         with open('User.txt', 'r') as file:
@@ -45,12 +47,34 @@ def spiluser():
                     role = parts[2]
                     pwd = parts[3]
                     kondisi = parts[4]
-                    users[aidi] = {
-                        "Username": uname,
-                        "Role": role,
-                        "Password": pwd,
-                        "Kondisi": kondisi
-                    }
+                    if Tanda=="Neg":
+                        if kondisi=="0":
+                            users[aidi] = {
+                                "Username": uname,
+                                "Role": role,
+                                "Password": pwd,
+                                "Kondisi": kondisi
+                            }
+                        else:
+                            pass
+                    elif Tanda=="Pos":
+                        if kondisi=="1":
+                            users[aidi] = {
+                                "Username": uname,
+                                "Role": role,
+                                "Password": pwd,
+                                "Kondisi": kondisi
+                            }
+                        else:
+                            pass
+                    elif Tanda=="Uni":
+                        users[aidi] = {
+                            "Username": uname,
+                            "Role": role,
+                            "Password": pwd,
+                            "Kondisi": kondisi
+                        }
+
     except FileNotFoundError:
         pass
     return users
@@ -72,8 +96,7 @@ def tambahuser():
                 break
         else:
             print("Pilih salah satu di antara Admin, Kasir, atau Pengelola Gudang!")
-            continue
-    users = spiluser()
+    users = spiluser("Uni")
     yangada=True
     while True:
         aidi=str(random.randrange(100000,999999))
@@ -97,7 +120,7 @@ def hapususer():
         aidi_hapus = input("Masukkan ID User yang akan dihapus\n0 untuk keluar\n")
         if aidi_hapus=="0".strip():
             return
-        users = spiluser()
+        users = spiluser("Pos")
         for aidi, ditel in users.items():
             if aidi_hapus in aidi:
                 ditel['Kondisi']="0"
@@ -211,7 +234,7 @@ def urutygy(job, descending=False):
     return BucketSort(semua_barang, descending=descending)
 
 def login(usernamecek,passwordcek):
-    loginkan=spiluser()
+    loginkan=spiluser("Pos")
     kondisilogin=""
     for _, detailuser in loginkan.items():
         if detailuser['Username']==usernamecek and detailuser['Password']==passwordcek and detailuser['Kondisi']=="1":
@@ -267,9 +290,10 @@ def serch(Aidibarang):
         for Aidiya, ditails in isinya.items():
             if Aidibarang==Aidiya:
                 print("\n>> Ditemukan!")
-                print(f"[{Aidiya}] {ditails['Nama Barang']}")
-                print(f"      Stok  : {ditails['Stok']}")
-                print(f"      Harga : Rp {ditails['Harga']:,.0f}".replace(",", "."))
+                print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16}")
+                print("-"*75)
+                harga = f"Rp {ditails['Harga']:,.0f}".replace(",", ".")
+                print(f"{Aidiya:<10} | {ditails['Nama Barang']:<30} | {ditails['Stok']:>6} pcs | {harga:>16}")
                 return Aidiya
     return None
 
@@ -516,4 +540,17 @@ def diaktifkan():
 
 def diaktifkanuser():
     while True:
-        aidi=input("Masukkan Aidi yang akan diaktifkan usernya!")
+        print("\n====================== DAFTAR USER SMK MART ======================")
+        print(f"{'ID USER':<10} | {'USERNAME':<18} | {'ROLE':<20} | {'KONDISI':<10}")
+        print("-"*67)
+        daftar=spiluser("Neg")
+        for idi, lainnya in daftar.items():
+            kondisiuser="Nonaktif"
+            print(f"{idi:<10} | {lainnya['Username']:<18} | {lainnya['Role']:<20} | {kondisiuser:<10}")
+        aidi=input("Masukkan Aidi yang akan diaktifkan usernya!\n0 untuk keluar\n")
+        yaitu=False
+        for idi, lainnya in daftar.items():
+            if aidi==idi:
+                yaitu=True
+        if yaitu==False:
+            print("Aidi tidak ditemukan!")
