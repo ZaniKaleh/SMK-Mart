@@ -214,7 +214,7 @@ def login(usernamecek,passwordcek):
     loginkan=spiluser()
     kondisilogin=""
     for _, detailuser in loginkan.items():
-        if detailuser['Username']==usernamecek and detailuser['Password']==passwordcek:
+        if detailuser['Username']==usernamecek and detailuser['Password']==passwordcek and detailuser['Kondisi']=="1":
             if detailuser['Role'].upper()=="Admin".upper():
                 kondisilogin="YaAdmin"
                 break
@@ -224,6 +224,8 @@ def login(usernamecek,passwordcek):
             elif detailuser['Role'].upper()=="Pengelola Gudang".upper():
                 kondisilogin="YaGudang"
                 break
+        elif detailuser['Username']==usernamecek and detailuser['Password']==passwordcek and detailuser['Kondisi']=="0":
+            print("Akun ini sedang dinonaktifkan!")
     return kondisilogin
 
 def editbarang(Aidibarang, editstok):
@@ -299,14 +301,23 @@ def keranjangnya(idygy, keranjang, beli, akhir):
         for idi, sisay in ntar.items():
             if idi == idygy:
                 ditemukan = True
-                keranjang.append({
-                    idygy:{
-                        'Nama Barang': sisay['Nama Barang'],
-                        'Jumlah dibeli': beli,
-                        'Harga Satuan': sisay['Harga'],
-                        'Harga': akhir
-                    }
-                })
+                dikeranjang=False
+                for item in keranjang:
+                    if idygy in item:
+                        item[idygy]['Jumlah dibeli']+=beli
+                        item[idygy]['Harga']+=akhir
+                        dikeranjang=True
+                        break
+                    if not dikeranjang:
+                        keranjang.append({
+                            idygy:{
+                                'Nama Barang': sisay['Nama Barang'],
+                                'Jumlah dibeli': beli,
+                                'Harga Satuan': sisay['Harga'],
+                                'Harga': akhir
+                            }
+                        })
+                        break
                 break
         if ditemukan==True:
             break
@@ -502,3 +513,7 @@ def diaktifkan():
             break
     if not ditemukan:
         print("ID barang tidak ditemukan!")
+
+def diaktifkanuser():
+    while True:
+        aidi=input("Masukkan Aidi yang akan diaktifkan usernya!")

@@ -13,10 +13,10 @@ while True:
     password = input()
     validasiuser=KerjaDatabase.login(username,password)
     if validasiuser =="YaAdmin" :
-        Admin.punyaadmin(username, "Admin")
+        Admin.punyaadmin(username, "ADMIN")
     elif validasiuser=="YaKasir":
-        Kasir.Kasirnya("Kasir", username)
+        Kasir.Kasirnya("KASIR", username)
     elif validasiuser=="YaGudang":
-        Gudang.Gudangnya("Pengelola Gudang")
+        Gudang.Gudangnya("PENGELOLA GUDANG")
     else:
         print("Username, Password, atau Role Anda tidak valid!")
