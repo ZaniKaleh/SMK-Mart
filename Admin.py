@@ -43,13 +43,6 @@ def punyaadmin(username, role):
                                         print(f"{AidiUser:<10} | {lainUser['Username']:<18} | {lainUser['Role']:<20} | {kondisiuser:<10}")
                                 KerjaDatabase.hapususer()
                             elif pilih.strip()=="4":
-                                balikdaftar=KerjaDatabase.spiluser("Neg")
-                                print("\n====================== DAFTAR USER SMK MART ======================")
-                                print(f"{'ID USER':<10} | {'USERNAME':<18} | {'ROLE':<20} | {'KONDISI':<10}")
-                                print("-"*67)
-                                for AidiUser, lainUser in balikdaftar.items():
-                                    kondisiuser = "Aktif"
-                                    print(f"{AidiUser:<10} | {lainUser['Username']:<18} | {lainUser['Role']:<20} | {kondisiuser:<10}")
                                 KerjaDatabase.diaktifkanuser()
                             elif pilih.strip()=="0":
                                 break

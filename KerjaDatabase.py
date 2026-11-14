@@ -1,13 +1,17 @@
 from ast import While
+from pathlib import Path
 from datetime import datetime
 import random
 
-from Main import username
-
+Basenya=Path(__file__).resolve().parent
+Stok=Basenya/"Stok.txt"
+User=Basenya/"User.txt"
+Laporannya=Basenya/"Laporan.txt"
+Kategori=Basenya/"Kategori.txt"
 def spilstok(job):
     stok = {}
     try:
-        with open('Stok.txt', 'r') as file:
+        with Stok.open('r',encoding='utf=8') as file:
             for line in file:
                 if line.strip():
                     parts = line.strip().split('|')
@@ -38,7 +42,7 @@ def spilstok(job):
 def spiluser(Tanda):
     users = {}
     try:
-        with open('User.txt', 'r') as file:
+        with User.open('r',encoding='utf-8') as file:
             for line in file:
                 if line.strip():
                     parts = line.strip().split('|')
@@ -109,33 +113,15 @@ def tambahuser():
             break
     users[aidi] = {"Username": uname, "Role": role, "Password": pwd}
 
-    with open('User.txt', 'w') as file:
+    with User.open('w',encoding='utf-8') as file:
         for id_u, det in users.items():
             file.writelines(f"{id_u}|{det['Username']}|{det['Role']}|{det['Password']}|{det.get('Kondisi', '1')}\n")
     print("User berhasil ditambahkan!")
 
-def hapususer():
-    while True:
-        print("\n== Hapus User ==")
-        aidi_hapus = input("Masukkan ID User yang akan dihapus\n0 untuk keluar\n")
-        if aidi_hapus=="0".strip():
-            return
-        users = spiluser("Pos")
-        for aidi, ditel in users.items():
-            if aidi_hapus in aidi:
-                ditel['Kondisi']="0"
-                with open('User.txt', 'w') as file:
-                    for id_u, det in users.items():
-                        file.writelines(f"{id_u}|{det['Username']}|{det['Role']}|{det['Password']}|{det.get('Kondisi', '1')}\n")
-                print("User berhasil dihapus dari sistem!")
-                return
-            else:
-                print("ID User tidak ditemukan!")
-
 def spillaporan():
     laporan = {}
     try:
-        with open('Laporan.txt', 'r') as file:
+        with Laporannya.open('r',encoding='utf-8') as file:
             for line in file:
                 if line.strip():
                     parts = line.strip().split('|')
@@ -185,14 +171,14 @@ def spillaporan():
     return laporan
 
 def simpanstok(dataterbaru):
-    with open('Stok.txt', 'w') as file:
+    with Stok.open('w',encoding='utf-8') as file:
         for kat, isikat in dataterbaru.items():
             for aidi, detail in isikat.items():
                 kondisi = detail.get('Kondisi', 1)
                 file.write(f"{kat}|{aidi}|{detail['Nama Barang']}|{detail['Stok']}|{detail['Harga']}|{detail['Stok Minimum']}|{kondisi}\n")
 
 def simpanlaporan(omtewe, bulan):
-    with open('Laporan.txt', 'a') as file:
+    with Laporannya.open('a',encoding='utf-8') as file:
         barang_strings = []
         for item in omtewe['Barang yang dibeli']:
             for idb, detail in item.items():
@@ -389,7 +375,7 @@ def nambahbarang():
 
     kat_dict = {}
     try:
-        with open("Kategori.txt", "r") as file_kat:
+        with Kategori.open("r",encoding='utf-8') as file_kat:
             for line in file_kat:
                 if line.strip():
                     p = line.strip().split('|')
@@ -425,7 +411,7 @@ def nambahbarang():
                 else:
                     break
 
-            with open("Kategori.txt", "a") as file_kat_append:
+            with Kategori.open("a",encoding='utf-8') as file_kat_append:
                 file_kat_append.write(f"\n{kat}|{inisial}\n")
 
             kat_dict[kat] = inisial
@@ -547,10 +533,42 @@ def diaktifkanuser():
         for idi, lainnya in daftar.items():
             kondisiuser="Nonaktif"
             print(f"{idi:<10} | {lainnya['Username']:<18} | {lainnya['Role']:<20} | {kondisiuser:<10}")
-        aidi=input("Masukkan Aidi yang akan diaktifkan usernya!\n0 untuk keluar\n")
+        aidi=input("Masukkan Aidi yang akan diaktifkan usernya!\n0 untuk keluar\n").strip()
+        if aidi=="0":
+            return
         yaitu=False
         for idi, lainnya in daftar.items():
-            if aidi==idi:
+            if aidi == idi:
                 yaitu=True
+                semua=spiluser("Uni")
+                semua[idi]['Kondisi']="1"
+                with User.open('w',encoding='utf-8') as file:
+                    for idu, deta in semua.items():
+                        file.writelines(f"{idu}|{deta['Username']}|{deta['Role']}|{deta['Password']}|{deta.get('Kondisi','0')}\n")
+                break
         if yaitu==False:
             print("Aidi tidak ditemukan!")
+        elif yaitu:
+            print("User berhasil dipulihkan!")
+
+def hapususer():
+    while True:
+        print("\n== Hapus User ==")
+        aidi_hapus = input("Masukkan ID User yang akan dihapus\n0 untuk keluar\n").strip()
+        if aidi_hapus=="0":
+            return
+        users = spiluser("Pos")
+        berhasil=False
+        for aidi, ditel in users.items():
+            if aidi_hapus == aidi:
+                semua=spiluser("Uni")
+                semua[aidi]['Kondisi']="0"
+                with User.open('w',encoding='utf-8') as file:
+                    for id_u, det in semua.items():
+                        file.writelines(f"{id_u}|{det['Username']}|{det['Role']}|{det['Password']}|{det.get('Kondisi', '1')}\n")
+                berhasil=True
+                break
+        if berhasil==True:
+            print("User berhasil dihapus dari sistem!")
+        elif berhasil==False:
+            print("ID User tidak ditemukan!")
