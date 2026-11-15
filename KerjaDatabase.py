@@ -327,16 +327,15 @@ def keranjangnya(idygy, keranjang, beli, akhir):
                         item[idygy]['Harga']+=akhir
                         dikeranjang=True
                         break
-                    if not dikeranjang:
-                        keranjang.append({
-                            idygy:{
-                                'Nama Barang': sisay['Nama Barang'],
-                                'Jumlah dibeli': beli,
-                                'Harga Satuan': sisay['Harga'],
-                                'Harga': akhir
-                            }
-                        })
-                        break
+                if not dikeranjang:
+                    keranjang.append({
+                        idygy:{
+                            'Nama Barang': sisay['Nama Barang'],
+                            'Jumlah dibeli': beli,
+                            'Harga Satuan': sisay['Harga'],
+                            'Harga': akhir
+                        }
+                    })
                 break
         if ditemukan==True:
             break
