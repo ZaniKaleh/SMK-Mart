@@ -11,38 +11,24 @@ def Gudangnya(role):
                 print("1= Data Barang")
                 print("2= Edit Stok Barang")
                 print("3= Tambahkan Barang Baru")
-                print("4= Aktifkan atau Nonakifkan barang")
+                print("4= Pulihkan atau Hapus barang")
                 print("0= Keluar Menu\n")
                 tugas=input()
                 match tugas:
                     case "1":
-                        print("\nPilih metode pengurutan:")
-                        print("1. Ascending  (Gabungan A - Z)")
-                        print("2. Descending (Gabungan Z - A)")
-                        print("3. Berdasarkan Kategori")
-                        metode = input("Masukkan pilihan:\n")
-                        if metode == "1" or metode == "2":
-                            status_descending = True if metode == "2" else False
-                            barang_terurut = KerjaDatabase.urutygy(role, descending=status_descending)
-                            print("\n=== DAFTAR SELURUH BARANG SMK MART ===")
-                            print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STATUS':<10}")
-                            print("-"*88)
-                            for Aidi, detail in barang_terurut:
-                                harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
-                                status = "Aktif" if detail['Kondisi']==1 else "Nonaktif"
-                                if role=="ADMIN":
-                                    print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {status:<10}")
-                                else:
-                                    print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {'':<10}")
-                            print("="*88+"\n")
-
-                        elif metode == "3":
-                            Sementara = KerjaDatabase.spilstok(role)
-                            for kategori, IsiKategori in Sementara.items():
-                                print(f"\n>> Kategori: {kategori.upper()}")
+                        while True:
+                            print("\nPilih metode pengurutan:")
+                            print("1. Ascending  (Gabungan A - Z)")
+                            print("2. Descending (Gabungan Z - A)")
+                            print("3. Berdasarkan Kategori")
+                            print("4. Kembali")
+                            metode = input("Masukkan pilihan:\n").strip()
+                            if metode == "1" or metode == "2":
+                                status_descending = True if metode == "2" else False
+                                barang_terurut = KerjaDatabase.urutygy(role, descending=status_descending)
+                                print("\n=== DAFTAR SELURUH BARANG SMK MART ===")
                                 print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STATUS':<10}")
                                 print("-"*88)
-                                barang_terurut = KerjaDatabase.BucketSort(IsiKategori, descending=False)
                                 for Aidi, detail in barang_terurut:
                                     harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
                                     status = "Aktif" if detail['Kondisi']==1 else "Nonaktif"
@@ -50,7 +36,27 @@ def Gudangnya(role):
                                         print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {status:<10}")
                                     else:
                                         print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {'':<10}")
-                            print("\n"+"="*88)
+                                print("="*88+"\n")
+
+                            elif metode == "3":
+                                Sementara = KerjaDatabase.spilstok(role)
+                                for kategori, IsiKategori in Sementara.items():
+                                    print(f"\n>> Kategori: {kategori.upper()}")
+                                    print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STATUS':<10}")
+                                    print("-"*88)
+                                    barang_terurut = KerjaDatabase.BucketSort(IsiKategori, descending=False)
+                                    for Aidi, detail in barang_terurut:
+                                        harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
+                                        status = "Aktif" if detail['Kondisi']==1 else "Nonaktif"
+                                        if role=="ADMIN":
+                                            print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {status:<10}")
+                                        else:
+                                            print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {'':<10}")
+                                print("\n"+"="*88)
+                            elif metode=="4":
+                                break
+                            else:
+                                print("Masukkan input yang valid!")
                     case "2":
                         cekstok=KerjaDatabase.spilstok(role)
                         for Kategori, isikategori in cekstok.items():
@@ -94,7 +100,7 @@ def Gudangnya(role):
                     case "4":
                         while True:
                             try:
-                                opsi4=int(input("Ingin menghapus atau mengaktifkan barang?\n1= Hapus\n2= Aktifkan\n0= Keluar\n\n"))
+                                opsi4=int(input("Ingin menghapus atau memulihkan barang?\n1= Hapus\n2= Pulihkan\n0= Keluar\n\n"))
                             except ValueError:
                                 print("Masukkan angka")
                                 continue

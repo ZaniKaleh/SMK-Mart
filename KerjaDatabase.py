@@ -11,7 +11,7 @@ Kategori=Basenya/"Kategori.txt"
 def spilstok(job):
     stok = {}
     try:
-        with Stok.open('r',encoding='utf=8') as file:
+        with Stok.open('r',encoding='utf-8') as file:
             for line in file:
                 if line.strip():
                     parts = line.strip().split('|')
@@ -23,9 +23,10 @@ def spilstok(job):
                     stok_min = int(parts[5])
                     aktif = int(parts[6]) if len(parts) > 6 else 1
 
-                    if job != "ADMIN" and aktif==0:
+                    if job == "EXC" and aktif==1:
                         continue
-
+                    elif job!="ADMIN" and job!="EXC" and aktif==0:
+                        continue
                     if kat not in stok:
                         stok[kat] = {}
                     stok[kat][aidi] = {
@@ -257,11 +258,19 @@ def editbarang(Aidibarang, editstok):
 
 def hapusbarang():
     print("\n== Nonaktifkan Barang ==")
+    cekdata = spilstok("BIASA")
+    for Kategorina, isikategori in cekdata.items():
+        print(f"\n>> Kategori: {Kategorina.upper()}")
+        print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STOK MIN':>10} | {'STATUS':<10}")
+        print("-"*101)
+        for Aidi, detail in isikategori.items():
+            harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
+            status = "Nonaktif"
+            print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {status:<10}")
     Aidibarang = input("Masukkan ID barang yang ingin dinonaktifkan:\n").upper()
-    cekdata = spilstok("ADMIN")
     ditemukan = False
     for isikategori in cekdata.values():
-        if Aidibarang in isikategori:
+        if Aidibarang == isikategori:
             isikategori[Aidibarang]['Kondisi'] = 0
             simpanstok(cekdata)
             print(f"Barang {Aidibarang} berhasil dinonaktifkan!")
@@ -510,9 +519,18 @@ def hapuskeranjang(ygdihapus, IDdihapus):
     return False
 
 def diaktifkan():
-    print("\n== Aktifkan Barang ==")
-    Aidibarang = input("Masukkan ID barang yang ingin diaktifkan:\n").upper()
-    cekdata = spilstok("Admin")
+    print("\n== Pulihkan Barang ==")
+    cekdata = spilstok("EXC")
+    for Kategori, isikategori in cekdata.items():
+        print(f"\n>> Kategori: {Kategori.upper()}")
+        print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STOK MIN':>10} | {'STATUS':<10}")
+        print("-"*101)
+        for Aidi, detail in isikategori.items():
+            harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
+            status = "Nonaktif"
+            print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {status:<10}")
+
+    Aidibarang = input("Masukkan ID barang yang ingin dipulihkan:\n").upper()
     ditemukan = False
     for isikategori in cekdata.values():
         if Aidibarang in isikategori:

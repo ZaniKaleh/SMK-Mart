@@ -58,6 +58,15 @@ def Kasirnya(role,username):
                             print("Barang tidak ditemukan!")
             elif opsi == "2":
                 Belilagi=True
+                inilah=KerjaDatabase.spilstok(role)
+                for kate, isine in inilah.items():
+                    print(f"\n>> Kategori: {kate.upper()}")
+                    print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STOK MIN':>10} | {'STATUS':<10}")
+                    print("-"*101)
+                    for Aidi, detail in isine.items():
+                        harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
+                        status = "Nonaktif"
+                        print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {status:<10}")
                 while Belilagi==True:
                     idygy = input("Masukkan ID Barang yang dibeli oleh pelanggan!\n").upper()
                     hasilbeli = KerjaDatabase.serch(idygy)
