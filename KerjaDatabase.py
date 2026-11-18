@@ -300,21 +300,36 @@ def hapusbarang():
     if not ditemukan:
         print("ID barang tidak ditemukan!")
 
-def serch(Aidibarang):
-    otw=spilstok(0)
+def serch(Aidibarang, role):
+    otw=spilstok(role)
     for _, isinya in otw.items():
         for Aidiya, ditails in isinya.items():
             if Aidibarang==Aidiya:
-                print("\n>> Ditemukan!")
-                print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16}")
-                print("-"*75)
-                harga = f"Rp {ditails['Harga']:,.0f}".replace(",", ".")
-                print(f"{Aidiya:<10} | {ditails['Nama Barang']:<30} | {ditails['Stok']:>6} pcs | {harga:>16}")
-                return Aidiya
-    return None
+                if role=="ADMIN":
+                    if ditails['Kondisi']==0:
+                        return "@#"
+                    elif ditails['Kondisi']==1:
+                        print("\n>> Ditemukan!")
+                        print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16}")
+                        print("-"*75)
+                        harga = f"Rp {ditails['Harga']:,.0f}".replace(",", ".")
+                        print(f"{Aidiya:<10} | {ditails['Nama Barang']:<30} | {ditails['Stok']:>6} pcs | {harga:>16}")
+                        return Aidiya
+                else:
+                    if ditails['Kondisi']==0:
+                        pass
+                    elif ditails['Kondisi']==1:
+                        print("\n>> Ditemukan!")
+                        print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16}")
+                        print("-"*75)
+                        harga = f"Rp {ditails['Harga']:,.0f}".replace(",", ".")
+                        print(f"{Aidiya:<10} | {ditails['Nama Barang']:<30} | {ditails['Stok']:>6} pcs | {harga:>16}")
+                        return Aidiya
+    return "#$"
 
 def transaksi(jumlahbeli, aidibrg):
     ambil=spilstok("ADMIN")
+    inidia=cadangan()
     ringkas=0
     for _, lain1 in ambil.items():
         for aidi, lain2 in lain1.items():

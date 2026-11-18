@@ -74,15 +74,19 @@ def Kasirnya(role,username):
                         status = "Aktif"
                         print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {status:<10}")
                 while Belilagi==True:
-                    idygy = input("Masukkan ID Barang yang dibeli oleh pelanggan!\n").upper()
-                    hasilbeli = KerjaDatabase.serch(idygy)
+                    idygy = input("Masukkan ID Barang yang dibeli oleh pelanggan!\n").upper().strip()
+                    while not idygy.isalnum():
+                        idygy=input("Hanya masukkan huruf dan angka!").upper().strip()
+                    hasilbeli = KerjaDatabase.serch(idygy, role)
 
                     if hasilbeli == idygy:
-                        try:
-                            beli = int(input("Masukkan jumlah barang yang dibeli!\n"))
-                        except ValueError:
-                            print("Harap masukkan angka!")
-                            continue
+                        while True:
+                            try:
+                                beli = int(input("Masukkan jumlah barang yang dibeli!\n"))
+                            except ValueError:
+                                print("Harap masukkan angka!")
+                                continue
+                            break
 
                         if beli > 0:
                             akhir = KerjaDatabase.transaksi(beli, hasilbeli)
@@ -150,7 +154,9 @@ def Kasirnya(role,username):
                                             print("Input tidak valid!")
                         else:
                             print("Jumlah barang harus lebih dari 0!")
-                    else:
+                    elif hasilbeli=="@#":
+                        print("ID Barang ini sedang nonaktif!")
+                    elif hasilbeli=="#$":
                         print("ID barang yang anda masukkan tidak terdaftar!")
                     if Belilagi==False:
                         break
