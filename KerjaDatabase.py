@@ -8,6 +8,8 @@ Stok=Basenya/"Stok.txt"
 User=Basenya/"User.txt"
 Laporannya=Basenya/"Laporan.txt"
 Kategori=Basenya/"Kategori.txt"
+Ditelstok=Basenya/"Ditelstok.txt"
+
 def spilstok(job):
     stok = {}
     try:
@@ -23,9 +25,7 @@ def spilstok(job):
                     stok_min = int(parts[5])
                     aktif = int(parts[6]) if len(parts) > 6 else 1
 
-                    if job == "EXC" and aktif==1:
-                        continue
-                    elif job!="ADMIN" and job!="EXC" and aktif==0:
+                    if job == "EXC" and aktif==1 or job!="ADMIN" and job!="EXC" and aktif==0:
                         continue
                     if kat not in stok:
                         stok[kat] = {}
@@ -39,7 +39,28 @@ def spilstok(job):
     except FileNotFoundError:
         pass
     return stok
+def cadangan():
+    cadangan={}
+    try:
+        with Ditelstok.open('r', encoding='utf-8') as file:
+            for line in file:
+                parts=line.strip().split('|')
+                idi=parts[0]
+                urut=parts[1]
+                tanggal=parts[2]
+                stoktambah=parts[3]
+                modal=parts[4]
 
+                cadangan={
+                    'ID':idi,
+                    'Urut':urut,
+                    'Tanggal':tanggal,
+                    'Ditambah':stoktambah,
+                    'Harga Modal':modal
+                }
+    except FileNotFoundError:
+        pass
+    return cadangan
 def spiluser(Tanda):
     users = {}
     try:
