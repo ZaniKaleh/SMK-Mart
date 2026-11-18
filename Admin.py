@@ -1,6 +1,7 @@
 import KerjaDatabase
 import Gudang
 import Kasir
+import Main
 import sys
 
 def punyaadmin(username, role):
@@ -11,6 +12,7 @@ def punyaadmin(username, role):
                 print("2= Buat laporan Penjualan")
                 print("3= Buka Menu Gudang")
                 print("4= Buka Menu Kasir")
+                print("999= Kembali ke Login")
                 tugasadmin=input("0= Untuk keluar\n")
                 match tugasadmin:
                     case "1":
@@ -74,6 +76,8 @@ def punyaadmin(username, role):
                         Gudang.Gudangnya(role)
                     case "4":
                         Kasir.Kasirnya(role, username)
+                    case "999":
+                        Main.Login()
                     case "0":
                         sys.exit()
                     case _:

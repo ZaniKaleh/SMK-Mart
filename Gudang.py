@@ -1,4 +1,5 @@
 from ast import While
+import Main
 import sys
 
 import KerjaDatabase
@@ -12,6 +13,7 @@ def Gudangnya(role):
                 print("2= Edit Stok Barang")
                 print("3= Tambahkan Barang Baru")
                 print("4= Pulihkan atau Hapus barang")
+                print("999= Kembali ke Login")
                 print("0= Keluar Menu\n")
                 tugas=input()
                 match tugas:
@@ -113,6 +115,8 @@ def Gudangnya(role):
                                     break
                                 case _:
                                     print("Masukkan antara angka 1, 2, atau 0!")
+                    case "999":
+                        Main.Login()
                     case "0":
                         sys.exit()
                     case _:

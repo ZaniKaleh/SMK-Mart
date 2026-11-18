@@ -1,5 +1,7 @@
 from ast import While
 from pprint import PrettyPrinter
+import Main
+import sys
 
 import KerjaDatabase
 
@@ -16,6 +18,8 @@ def Kasirnya(role,username):
             print("\nOpsi Kasir:")
             print("1 = Cari/Lihat Barang")
             print("2 = Jual Barang (Masukkan ID)")
+            print("999= Kembali ke Login")
+            print("0= Keluar")
             opsi = input("Pilih Opsi:\n")
 
             if opsi == "1":
@@ -150,6 +154,11 @@ def Kasirnya(role,username):
                         print("ID barang yang anda masukkan tidak terdaftar!")
                     if Belilagi==False:
                         break
+
+            elif opsi=="999"   :
+                Main.Login()
+            elif opsi=="0":
+                sys.exit()
             else:
                 print("Opsi tidak valid!")
             if len(keranjang) > 0:
