@@ -259,23 +259,69 @@ def login(usernamecek,passwordcek):
             print("Akun ini sedang dinonaktifkan!")
     return kondisilogin
 
-def editbarang(Aidibarang, editstok):
+def editbarang(Aidibarang, namabaru, hargabaru, minimalbaru):
     cekdata=spilstok("ADMIN")
-    berhasiledit="IDgagal"
+    berhasiledit="Belum"
     for _, detailygy in cekdata.items():
         for AidiT, ditel in detailygy.items():
             if AidiT==Aidibarang:
-                if editstok<ditel['Stok Minimum']:
-                    berhasiledit="Ngawur"
-                    break
+                if namabaru=="0":
+                    berhasiledit="NoPerubahan"
                 else:
-                    ditel['Stok']=editstok
-                    simpanstok(cekdata)
-                    berhasiledit="Berhasil"
-                    break
-        if berhasiledit=="Berhasil":
+                    ditel['Nama Barang']=namabaru
+                    berhasiledit="Berubah"
+                if hargabaru==0:
+                    if berhasiledit!="Berubah":
+                        berhasiledit="NoPerubahan"
+                else:
+                    ditel['Harga']=hargabaru
+                    berhasiledit="Berubah"
+                if minimalbaru==0:
+                    if berhasiledit!="Berubah":
+                        berhasiledit="NoPerubahan"
+                else:
+                    ditel['Stok Minimum']=minimalbaru
+                    berhasiledit="Berubah"
+                simpanstok(cekdata)
+                break
+        if berhasiledit!="Belum":
             break
     return berhasiledit
+
+def restokbarang(Aidinya, nambah):
+    datanya=spilstok("ADMIN")
+    hasil="Blum"
+    for _, detailygy in datanya.items():
+        for Idikan, ditel in detailygy.items():
+            if Idikan==Aidinya:
+                ditel['Stok']+=nambah
+                simpanstok(datanya)
+                hasil="Udah"
+                break
+        if hasil=="Udah":
+            break
+    return hasil
+def kurangibarang(Aidinya, dikurangi):
+    datanya=spilstok("ADMIN")
+    hasil="Blum"
+    for kategori, detailygy in datanya.items():
+        for Idikan, ditel in detailygy.items():
+            if Idikan==Aidinya:
+                if ditel['Stok']==dikurangi:
+                    yakin=input("Anda yakin ingin menghapus barang ini secara permanen? (y?N)\n").upper().strip()
+                    while yakin!="Y" and yakin!="N":
+                        yakin=input("Masukkan y atau N!\n")
+                    if yakin=="Y":
+                        del kategori
+                        hasil="Dihapus"
+                    elif yakin=="N" or yakin=="":
+                        ditel['Stok']-=dikurangi
+                        hasil="Dikurangi"
+                simpanstok(datanya)
+                break
+        if hasil!="Blum":
+            break
+    return hasil
 
 def hapusbarang():
     print("\n== Nonaktifkan Barang ==")

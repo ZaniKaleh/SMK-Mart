@@ -1,4 +1,5 @@
 from ast import While
+from copyreg import dispatch_table
 import Main
 import sys
 
@@ -10,7 +11,7 @@ def Gudangnya(role):
                 print("\n---------Selamat Datang di Bagian Gudang---------")
                 print("Tugas Apa yang Ingin Dijalankan?")
                 print("1= Data Barang")
-                print("2= Edit Stok Barang")
+                print("2= Kelola Barang")
                 print("3= Tambahkan Barang Baru")
                 print("4= Pulihkan atau Hapus barang")
                 print("999= Kembali ke Login")
@@ -60,43 +61,108 @@ def Gudangnya(role):
                             else:
                                 print("Masukkan input yang valid!")
                     case "2":
-                        cekstok=KerjaDatabase.spilstok(role)
-                        for Kategori, isikategori in cekstok.items():
-                            print(f"\n>> Kategori: {Kategori.upper()}")
-                            print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STOK MIN':>10} | {'STATUS':<10}")
-                            print("-"*101)
-                            for Aidi, detail in isikategori.items():
-                                harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
-                                status = "Aktif" if detail['Kondisi']==1 else "Nonaktif"
-                                if role=="ADMIN":
-                                    print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {status:<10}")
-                                else:
-                                    print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {'':<10}")
-                        print("")
-                        ubah=input("Masukkan ID barang yang ingin anda edit stoknya!\n").upper()
-                        try:
-                            stokbaru=int(input("Stoknya ingin anda ubah menjadi berapa?\n"))
-                            validasistok=KerjaDatabase.editbarang(ubah, stokbaru)
-                            if validasistok=="Berhasil":
-                                print("Perubahan data berhasil!")
-                                cekstok=KerjaDatabase.spilstok(role)
-                                for _, isikategori in cekstok.items():
-                                    for Aidi, detail in isikategori.items():
-                                        if ubah==Aidi:
+                        while True:
+                            pilih2=input("1= Edit Harga informasi barang (Edit nama barang/Harga Jual/Stok minimum)\n2= Restock barang\n3= Kurangi/Hapus barang\n0= Kembali\n\n")
+                            match pilih2:
+                                case "1":
+                                    cekstok=KerjaDatabase.spilstok(role)
+                                    for Kategori, isikategori in cekstok.items():
+                                        print(f"\n>> Kategori: {Kategori.upper()}")
+                                        print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STOK MIN':>10} | {'STATUS':<10}")
+                                        print("-"*101)
+                                        for Aidi, detail in isikategori.items():
                                             harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
-                                            print(f"\n{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16}")
-                                            print("-"*75)
-                                            print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16}")
+                                            status = "Aktif" if detail['Kondisi']==1 else "Nonaktif"
                                             if role=="ADMIN":
-                                                status = "Aktif" if detail['Kondisi']==1 else "Nonaktif"
-                                                print(f"Status: {status}")
-
-                            elif validasistok=="IDgagal":
-                                print("ID stok yang anda masukkan tidak valid!!")
-                            else:
-                                print("Stok baru yang anda masukkan di bawah stok minimum!")
-                        except ValueError:
-                            print("Masukkan angka yang valid!")
+                                                print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {status:<10}")
+                                            else:
+                                                print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {'':<10}")
+                                    print()
+                                    ubah=input("Masukkan ID barang yang ingin Anda edit!\n").upper().strip()
+                                    while not ubah.isalnum():
+                                        ubah=input("Hanya masukkan huruf dan angka!\n").upper().strip()
+                                    try:
+                                        namabaru=input("Ubah nama barang menjadi apa? (0 untuk lewati)\n").strip()
+                                        while "|" in namabaru:
+                                            namabaru=input("Tidak boleh terdapat '|' pada nama barang!\n")
+                                        hargabaru=int(input("Ubah harga jual menjadi berapa? (0 untuk lewati)\n"))
+                                        minimbaru=int(input("Ubah stok minimum menjadi berapa? (0 untuk lewati)\n"))
+                                        validasistok=KerjaDatabase.editbarang(ubah, namabaru,hargabaru,minimbaru)
+                                        if validasistok=="Berubah":
+                                            print("Perubahan data berhasil!")
+                                            cekstok=KerjaDatabase.spilstok(role)
+                                            for _, isikategori in cekstok.items():
+                                                for Aidi, detail in isikategori.items():
+                                                    if ubah==Aidi:
+                                                        harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
+                                                        print(f"\n{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16}")
+                                                        print("-"*75)
+                                                        print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16}")
+                                                        if role=="ADMIN":
+                                                            status = "Aktif" if detail['Kondisi']==1 else "Nonaktif"
+                                                            print(f"Status: {status}")
+                                        elif validasistok=="NoPerubahan":
+                                            print("Tidak ada perubahan yang dilakukan!")
+                                        elif validasistok=="Belum":
+                                            print("ID stok yang anda masukkan tidak valid!!")
+                                    except ValueError:
+                                        print("Masukkan angka yang valid!")
+                                case "2":
+                                    cekstok=KerjaDatabase.spilstok(role)
+                                    for Kategori, isikategori in cekstok.items():
+                                        print(f"\n>> Kategori: {Kategori.upper()}")
+                                        print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STOK MIN':>10} | {'STATUS':<10}")
+                                        print("-"*101)
+                                        for Aidi, detail in isikategori.items():
+                                            harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
+                                            status = "Aktif" if detail['Kondisi']==1 else "Nonaktif"
+                                            if role=="ADMIN":
+                                                print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {status:<10}")
+                                            else:
+                                                print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {'':<10}")
+                                    print()
+                                    ubah=input("Masukkan ID barang yang ingin Anda restock!\n").upper().strip()
+                                    while not ubah.isalnum():
+                                        ubah=input("Hanya masukkan huruf dan angka!\n").upper().strip()
+                                    ditambah=int(input("Stoknya ingin ditambah berapa?\n"))
+                                    while ditambah==ValueError:
+                                        ditambah=int(input("Hanya masukkan angka!\n"))
+                                    hasilrestok=KerjaDatabase.restokbarang(ubah, ditambah)
+                                    match hasilrestok:
+                                        case "Blum":
+                                            print("ID tidak ditemukan!")
+                                        case "Udah":
+                                            print("Berhasil restock!")
+                                case "3":
+                                    cekstok=KerjaDatabase.spilstok(role)
+                                    for Kategori, isikategori in cekstok.items():
+                                        print(f"\n>> Kategori: {Kategori.upper()}")
+                                        print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STOK MIN':>10} | {'STATUS':<10}")
+                                        print("-"*101)
+                                        for Aidi, detail in isikategori.items():
+                                            harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
+                                            status = "Aktif" if detail['Kondisi']==1 else "Nonaktif"
+                                            if role=="ADMIN":
+                                                print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {status:<10}")
+                                            else:
+                                                print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {'':<10}")
+                                    print()
+                                    ubah=input("Masukkan ID barang yang ingin Anda kurangi stoknya!\n").upper().strip()
+                                    while not ubah.isalnum():
+                                        ubah=input("Hanya masukkan huruf dan angka!\n").upper().strip()
+                                    dikurang=int(input("Stoknya ingin dikurangi berapa? (Masukkan seluruh stok yang tersedia untuk menghapus)\n"))
+                                    while dikurang==ValueError:
+                                        dikurang=int(input("Hanya masukkan angka!\n"))
+                                    hapushasil=KerjaDatabase.kurangibarang(ubah, dikurang)
+                                    match hapushasil:
+                                        case "Blum":
+                                            print("ID Barang tidak valid!")
+                                        case "Dihapus":
+                                            print("ID Barang berhasil dihapus!")
+                                        case "Dikurangi":
+                                            print("Barang berhasil dikurangi!")
+                                case "0":
+                                    break
                     case "3":
                         KerjaDatabase.nambahbarang()
                     case "4":

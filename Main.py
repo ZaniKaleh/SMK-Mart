@@ -1,8 +1,11 @@
+import sys
+
 import Admin
 import Gudang
 import Kasir
 import KerjaDatabase
-import sys
+
+
 def Login():
     gagal=0
     batas=5
@@ -28,3 +31,5 @@ def Login():
                 sys.exit()
             else:
                 print(f"Kesempatan login tersisa {batas-gagal} kali lagi!")
+if __name__ == "__main__":
+    Login()
