@@ -6,8 +6,9 @@ import sys
 import KerjaDatabase
 
 
-def Gudangnya(role):
-        while True:
+def Gudangnya(username, role):
+    from Admin import punyaadmin
+    while True:
                 print("\n---------Selamat Datang di Bagian Gudang---------")
                 print("Tugas Apa yang Ingin Dijalankan?")
                 print("1= Data Barang")
@@ -16,6 +17,8 @@ def Gudangnya(role):
                 print("4= Pulihkan atau Hapus barang")
                 print("999= Kembali ke Login")
                 print("0= Keluar Menu\n")
+                if role=="ADMIN":
+                    print("000= Kembali ke Menu Admin")
                 tugas=input()
                 match tugas:
                     case "1":
@@ -85,8 +88,14 @@ def Gudangnya(role):
                                         namabaru=input("Ubah nama barang menjadi apa? (0 untuk lewati)\n").strip()
                                         while "|" in namabaru:
                                             namabaru=input("Tidak boleh terdapat '|' pada nama barang!\n")
-                                        hargabaru=int(input("Ubah harga jual menjadi berapa? (0 untuk lewati)\n"))
-                                        minimbaru=int(input("Ubah stok minimum menjadi berapa? (0 untuk lewati)\n"))
+                                        hargabaru=input("Ubah harga jual menjadi berapa? (0 untuk lewati)\n")
+                                        while not hargabaru.isdigit():
+                                            hargabaru=input("Hanya masukkan angka yang valid!")
+                                        hargabaru=int(hargabaru)
+                                        minimbaru=input("Ubah stok minimum menjadi berapa? (0 untuk lewati)\n")
+                                        while not minimbaru.isdigit():
+                                            minimbaru=input("Hanya masukkan angka yang valid!")
+                                        minimbaru=int(minimbaru)
                                         validasistok=KerjaDatabase.editbarang(ubah, namabaru,hargabaru,minimbaru)
                                         if validasistok=="Berubah":
                                             print("Perubahan data berhasil!")
@@ -124,9 +133,10 @@ def Gudangnya(role):
                                     ubah=input("Masukkan ID barang yang ingin Anda restock!\n").upper().strip()
                                     while not ubah.isalnum():
                                         ubah=input("Hanya masukkan huruf dan angka!\n").upper().strip()
-                                    ditambah=int(input("Stoknya ingin ditambah berapa?\n"))
-                                    while ditambah==ValueError:
-                                        ditambah=int(input("Hanya masukkan angka!\n"))
+                                    ditambah=input("Stoknya ingin ditambah berapa?\n")
+                                    while not ditambah.isdigit():
+                                        ditambah=input("Hanya masukkan angka bulat!\n")
+                                    ditambah=int(ditambah)
                                     hasilrestok=KerjaDatabase.restokbarang(ubah, ditambah)
                                     match hasilrestok:
                                         case "Blum":
@@ -150,9 +160,10 @@ def Gudangnya(role):
                                     ubah=input("Masukkan ID barang yang ingin Anda kurangi stoknya!\n").upper().strip()
                                     while not ubah.isalnum():
                                         ubah=input("Hanya masukkan huruf dan angka!\n").upper().strip()
-                                    dikurang=int(input("Stoknya ingin dikurangi berapa? (Masukkan seluruh stok yang tersedia untuk menghapus)\n"))
-                                    while dikurang==ValueError:
-                                        dikurang=int(input("Hanya masukkan angka!\n"))
+                                    dikurang=input("Stoknya ingin dikurangi berapa? (Masukkan seluruh stok yang tersedia untuk menghapus)\n")
+                                    while not dikurang.isdigit():
+                                        dikurang=input("Hanya masukkan angka!\n")
+                                    dikurang=int(dikurang)
                                     hapushasil=KerjaDatabase.kurangibarang(ubah, dikurang)
                                     match hapushasil:
                                         case "Blum":
@@ -185,5 +196,10 @@ def Gudangnya(role):
                         Main.Login()
                     case "0":
                         sys.exit()
+                    case "000":
+                        if role=="ADMIN":
+                            punyaadmin(username,role)
+                        else:
+                            print("Input anda tidak valid!")
                     case _:
                         print("Input anda tidak valid!")
