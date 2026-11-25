@@ -297,10 +297,8 @@ def restokbarang(Aidinya, nambah):
     cadang=cadangan()
     hasil="Blum"
     urut=0
-
     w=datetime.now()
     Posisi=w.strftime("%Y-%m-%d")
-
     for _, detailygy in datanya.items():
         for Idikan, ditel in detailygy.items():
             if Idikan==Aidinya:
@@ -732,6 +730,7 @@ def hitungbersih(idina, dibeli):
     simpancadang(cadang)
     return total, hasil
 
+
 def hapuskeranjang(ygdihapus, IDdihapus, rincian):
     cek = spilstok("ADMIN")
     itulah = cadangan()
@@ -740,28 +739,22 @@ def hapuskeranjang(ygdihapus, IDdihapus, rincian):
         if IDdihapus in iye:
             barang = iye[IDdihapus]
             break
-
-    if barang is None:
+    if barang is None or ygdihapus <= 0:
         return False
-
     tersedia = 0
     for data in rincian:
         if data['ID'] == IDdihapus:
             tersedia += data['Ditambah']
-
-    if tersedia < ygdihapus:
+    if ygdihapus > tersedia:
         return False
-
-    sisa = ygdihapus
-    for i in range(len(rincian)-1, -1, -1):
-        data = rincian[i]
+    jumlahbaru = tersedia - ygdihapus
+    for data in rincian:
         if data['ID'] != IDdihapus or data['Ditambah'] <= 0:
             continue
-        kembali = min(sisa, data['Ditambah'])
         ditemukan = False
         for isi in itulah:
             if isi['ID'] == data['ID'] and isi['Urut'] == data['Urut']:
-                isi['Ditambah'] += kembali
+                isi['Ditambah'] += data['Ditambah']
                 ditemukan = True
                 break
         if not ditemukan:
@@ -769,20 +762,52 @@ def hapuskeranjang(ygdihapus, IDdihapus, rincian):
                 'ID': data['ID'],
                 'Urut': data['Urut'],
                 'Tanggal': data['Tanggal'],
-                'Ditambah': kembali,
+                'Ditambah': data['Ditambah'],
                 'Harga Modal': data['Harga Modal']
             })
-        data['Ditambah'] -= kembali
-        sisa -= kembali
-        if data['Ditambah'] == 0:
-            rincian.pop(i)
-        if sisa == 0:
+    rincianbaru = [
+        data.copy() for data in rincian
+        if data['ID'] != IDdihapus
+    ]
+    batchbarang = sorted(
+        [isi for isi in itulah if isi['ID'] == IDdihapus],
+        key=lambda isi: isi['Urut']
+    )
+    sisa = jumlahbaru
+    for isi in batchbarang:
+        if sisa <= 0:
             break
+        if isi['Ditambah'] <= 0:
+            continue
+        diambil = min(sisa, isi['Ditambah'])
+        isi['Ditambah'] -= diambil
+        rincianbaru.append({
+            'ID': isi['ID'],
+            'Urut': isi['Urut'],
+            'Tanggal': isi['Tanggal'],
+            'Ditambah': diambil,
+            'Harga Modal': isi['Harga Modal']
+        })
+        sisa -= diambil
     if sisa > 0:
         return False
+    try:
+        Stoklam = Stok.read_text(encoding='utf-8')
+        Cadlam = Ditelstok.read_text(encoding='utf-8')
+    except OSError:
+        return False
     barang['Stok'] += ygdihapus
-    simpancadang(itulah)
-    simpanstok(cek)
+    try:
+        simpancadang(itulah)
+        simpanstok(cek)
+    except OSError:
+        try:
+            Stok.write_text(Stoklam, encoding='utf-8')
+            Ditelstok.write_text(Cadlam, encoding='utf-8')
+        except OSError:
+            print("Peringatan: Gagal memulihkan file stok!")
+        return False
+    rincian[:] = rincianbaru
     return True
 
 def Pewe(prompt="Password : "):

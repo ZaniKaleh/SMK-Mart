@@ -16,7 +16,7 @@ def Gudangnya(username, role):
                 print("3= Tambahkan Barang Baru")
                 print("4= Pulihkan atau Hapus barang")
                 print("999= Kembali ke Login")
-                print("0= Keluar Menu\n")
+                print("0= Keluar Menu")
                 if role=="ADMIN":
                     print("000= Kembali ke Menu Admin")
                 tugas=input()

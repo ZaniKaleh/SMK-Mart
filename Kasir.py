@@ -68,7 +68,7 @@ def Kasirnya(role,username):
                         print("Barang tidak ditemukan!")
         elif opsi == "2":
             Belilagi=True
-            inilah=KerjaDatabase.spilstok(role)
+            inilah=KerjaDatabase.spilstok("KASIR")
             for kate, isine in inilah.items():
                 print(f"\n>> Kategori: {kate.upper()}")
                 print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STOK MIN':>10} | {'STATUS':<10}")

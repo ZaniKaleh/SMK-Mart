@@ -27,6 +27,7 @@ def Login():
             print("Username, Password, atau Role Anda tidak valid!")
             gagal+=1
             if gagal==batas:
+                print("\nTerlalu banyak percobaan gagal! Anda dikeluarkan dari program")
                 sys.exit()
             else:
                 print(f"Kesempatan login tersisa {batas-gagal} kali lagi!")

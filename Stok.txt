@@ -12,7 +12,7 @@ alat kebersihan|AKN003|Sabun Cuci Baju (5 Sachet)|24|5000|10|1
 alat kebersihan|AKN004|Shampoo (5 Sachet)|40|2500|10|1
 kendaraan|KND001|Sepeda|10|1700000|2|1
 kendaraan|KND002|Mobil|4|45000000|2|1
-snack|SNK001|Mentos|70|3000|10|0
+snack|SNK001|Mentos|100|3000|10|0
 snack|SNK002|MBG Beracun 60 abad|6|666666|1|1
-obat|OBT001|Promag|5|5000|5|1
+obat|OBT001|Promag|25|5000|5|1
 furnitur|FNT001|Meja|10|2000000|2|0
