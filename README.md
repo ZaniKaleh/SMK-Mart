@@ -31,9 +31,6 @@ SMK Mart adalah aplikasi antarmuka teks (CLI) berbasis Python yang dirancang unt
 
 Gunakan kredensial berikut untuk masuk ke dalam sistem saat pertama kali dijalankan:
 
-*   **Admin**
-    *   Username: Kang_Admin
-    *   Password: Admin#12345
 *   **Petugas Gudang**
     *   Username: Kang_Gudang
     *   Password: Gudang#12345

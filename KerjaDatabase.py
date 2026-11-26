@@ -3,6 +3,9 @@ import msvcrt
 from pathlib import Path
 from datetime import datetime
 import random
+import hashlib
+import hmac
+import secrets
 
 Basenya=Path(__file__).resolve().parent
 Stok=Basenya/"Stok.txt"
@@ -11,6 +14,28 @@ Laporannya=Basenya/"Laporan.txt"
 Kategori=Basenya/"Kategori.txt"
 Ditelstok=Basenya/"Ditelstok.txt"
 Labanya=Basenya/"Laba.txt"
+
+def hashPewe(password):
+    salt = secrets.token_bytes(16)
+    hasil = hashlib.pbkdf2_hmac(
+        'sha256', password.encode('utf-8'), salt, 600000
+    )
+    return f"pbkdf2_sha256${salt.hex()}${hasil.hex()}"
+
+def cekPewe(password, tersimpan):
+    if tersimpan.startswith("pbkdf2_sha256$"):
+        try:
+            algoritma, salt, hashRil = tersimpan.split('$', 2)
+            if algoritma != "pbkdf2_sha256":
+                return False, False
+            hasil = hashlib.pbkdf2_hmac(
+                'sha256', password.encode('utf-8'), bytes.fromhex(salt), 600000
+            ).hex()
+            return hmac.compare_digest(hasil, hashRil), False
+        except (ValueError, TypeError):
+            return False, False
+
+    return hmac.compare_digest(password, tersimpan), True
 
 def spilstok(job):
     stok = {}
@@ -135,7 +160,7 @@ def tambahuser():
                 break
         if yangada==False:
             break
-    users[aidi] = {"Username": uname, "Role": role, "Password": pwd}
+    users[aidi] = {"Username": uname, "Role": role, "Password": hashPewe(pwd)}
 
     with User.open('w',encoding='utf-8') as file:
         for id_u, det in users.items():
@@ -248,22 +273,39 @@ def urutygy(job, descending=False):
 
     return BucketSort(semua_barang, descending=descending)
 
-def login(usernamecek,passwordcek):
-    loginkan=spiluser("Pos")
-    kondisilogin=""
-    for _, detailuser in loginkan.items():
-        if detailuser['Username']==usernamecek and detailuser['Password']==passwordcek and detailuser['Kondisi']=="1":
-            if detailuser['Role'].upper()=="Admin".upper():
-                kondisilogin="YaAdmin"
+def login(usernamecek, passwordcek):
+    loginkan = spiluser("Uni")
+    kondisilogin = ""
+
+    for aidi, detailuser in loginkan.items():
+        cocok, password_lama = cekPewe(
+            passwordcek, detailuser['Password']
+        )
+
+        if detailuser['Username'] == usernamecek and cocok:
+            if detailuser['Kondisi'] == "0":
+                print("Akun ini sedang dinonaktifkan!")
                 break
-            elif detailuser['Role'].upper()=="Kasir".upper():
-                kondisilogin="YaKasir"
-                break
-            elif detailuser['Role'].upper()=="Pengelola Gudang".upper():
-                kondisilogin="YaGudang"
-                break
-        elif detailuser['Username']==usernamecek and detailuser['Password']==passwordcek and detailuser['Kondisi']=="0":
-            print("Akun ini sedang dinonaktifkan!")
+
+            if password_lama:
+                detailuser['Password'] = hashPewe(passwordcek)
+                loginkan[aidi]['Password'] = detailuser['Password']
+
+                with User.open('w', encoding='utf-8') as file:
+                    for id_u, det in loginkan.items():
+                        file.write(
+                            f"{id_u}|{det['Username']}|{det['Role']}|"
+                            f"{det['Password']}|{det['Kondisi']}\n"
+                        )
+
+            if detailuser['Role'].upper() == "ADMIN":
+                kondisilogin = "YaAdmin"
+            elif detailuser['Role'].upper() == "KASIR":
+                kondisilogin = "YaKasir"
+            elif detailuser['Role'].upper() == "PENGELOLA GUDANG":
+                kondisilogin = "YaGudang"
+            break
+
     return kondisilogin
 
 def editbarang(Aidibarang, namabaru, hargabaru, minimalbaru):
