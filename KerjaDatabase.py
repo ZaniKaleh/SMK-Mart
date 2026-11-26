@@ -10,6 +10,7 @@ User=Basenya/"User.txt"
 Laporannya=Basenya/"Laporan.txt"
 Kategori=Basenya/"Kategori.txt"
 Ditelstok=Basenya/"Ditelstok.txt"
+Labanya=Basenya/"Laba.txt"
 
 def spilstok(job):
     stok = {}
@@ -176,7 +177,8 @@ def spillaporan():
                                     "Nama Barang": nama,
                                     "Jumlah dibeli": jml,
                                     "Harga Satuan": hrg_sat,
-                                    "Harga": hrg_tot
+                                    "Harga": hrg_tot,
+                                    "Modal": int(b_parts[5]) if len(b_parts) > 5 else 0
                                 }
                             })
 
@@ -208,7 +210,8 @@ def simpanlaporan(omtewe, bulan):
         barang_strings = []
         for item in omtewe['Barang yang dibeli']:
             for idb, detail in item.items():
-                b_str = f"{idb};{detail['Nama Barang']};{detail['Jumlah dibeli']};{detail['Harga Satuan']};{detail['Harga']}"
+                modal = sum(isi['Ditambah'] * isi['Harga Modal'] for isi in detail.get('Rincian', []))
+                b_str = f"{idb};{detail['Nama Barang']};{detail['Jumlah dibeli']};{detail['Harga Satuan']};{detail['Harga']};{modal}"
                 barang_strings.append(b_str)
         barang_gabungan = "#".join(barang_strings)
 
@@ -618,6 +621,37 @@ def laporan(bulan):
         print("="*40)
     else:
         print(f"Tidak ada data laporan penjualan untuk tanggal {bulan}.")
+
+def simpanlaba(tanggal, laba_kotor, laba_bersih, barang):
+    with Labanya.open('a', encoding='utf-8') as file:
+        file.write(f"{tanggal} | {laba_kotor} | {laba_bersih} | {'#'.join(barang)}\n")
+
+def laba(tanggal):
+    laporan_data = spillaporan()
+    if tanggal not in laporan_data:
+        print(f"Tidak ada data penjualan untuk tanggal {tanggal}.")
+        return
+
+    total_harga = 0
+    total_modal = 0
+    barang = []
+    for transaksi in laporan_data[tanggal]:
+        total_harga += transaksi['Total Pembelian']
+        for item in transaksi['Barang yang dibeli']:
+            for idb, detail in item.items():
+                if idb not in barang:
+                    barang.append(idb)
+                total_modal += detail.get('Modal', 0)
+
+    laba_kotor = total_harga
+    laba_bersih = total_harga - total_modal
+    print(f"\n==== PERHITUNGAN LABA TANGGAL {tanggal} ====")
+    print(f"Total Modal       : Rp {total_modal:,.0f}".replace(",", "."))
+    print(f"Total Harga       : Rp {total_harga:,.0f}".replace(",", "."))
+    print(f"Laba Kotor        : Rp {laba_kotor:,.0f}".replace(",", "."))
+    print(f"Laba Bersih       : Rp {laba_bersih:,.0f}".replace(",", "."))
+    simpanlaba(tanggal, laba_kotor, laba_bersih, barang)
+    print("Hasil perhitungan berhasil disimpan ke Laba.txt.")
 
 
 def diaktifkan():

@@ -192,7 +192,7 @@ def Kasirnya(role,username):
 
             KerjaDatabase.strok(username, keranjang, total, uang_pembeli, kembalian)
             while True:
-                pembeli=input("Apakah ada pembeli lagi? (Y/n)\n").upper().strip()
+                pembeli=input("Apakah ada pembeli lagi?\nY= Kembali ke menu Kasir\nn= Kembali ke menu Login\n\n").upper().strip()
                 match pembeli:
                     case "Y":
                         break
