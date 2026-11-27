@@ -3,6 +3,7 @@ import msvcrt
 from pathlib import Path
 from datetime import datetime
 import random
+import os
 import hashlib
 import hmac
 import secrets
@@ -14,6 +15,86 @@ Laporannya=Basenya/"Laporan.txt"
 Kategori=Basenya/"Kategori.txt"
 Ditelstok=Basenya/"Ditelstok.txt"
 Labanya=Basenya/"Laba.txt"
+
+
+UKURAN_HALAMAN = 10
+
+def bersihkan_layar():
+    os.system("cls" if os.name == "nt" else "clear")
+
+def tampilkan_halaman(data, cetak_baris, judul="DAFTAR DATA",
+                      ukuran_halaman=UKURAN_HALAMAN,
+                      keterangan="0/Enter = Lanjut",
+                      bersihkan=True):
+    data = list(data)
+    if not data:
+        if bersihkan:
+            bersihkan_layar()
+        print("Data tidak tersedia!")
+        return "0"
+    halaman = 0
+    total_halaman = (len(data) + ukuran_halaman - 1) // ukuran_halaman
+    while True:
+        if bersihkan:
+            bersihkan_layar()
+        awal = halaman * ukuran_halaman
+        akhir = awal + ukuran_halaman
+        print(judul + f" (Halaman {halaman + 1}/{total_halaman})")
+        cetak_baris(data[awal:akhir])
+        if total_halaman == 1:
+            print(keterangan)
+        else:
+            print(f"N = Halaman Selanjutnya | P = Halaman Sebelumnya | {keterangan}")
+        pilihan = input().strip().lower()
+        if pilihan == "n":
+            if halaman < total_halaman - 1:
+                halaman += 1
+            else:
+                print("Sudah berada di halaman terakhir.")
+        elif pilihan == "p":
+            if halaman > 0:
+                halaman -= 1
+            else:
+                print("Sudah berada di halaman pertama.")
+        elif pilihan in ("", "0"):
+            if bersihkan:
+                bersihkan_layar()
+            return pilihan
+        else:
+            print("Input tidak valid. Gunakan N, P, 0, atau Enter.")
+
+def tampilkan_barang(data, role="BIASA", judul="DAFTAR BARANG", dengan_minimum=False):
+    items = []
+    for kategori, isi in data.items():
+        for aidi, detail in isi.items():
+            items.append((kategori, aidi, detail))
+    def cetak(baris):
+        if dengan_minimum:
+            print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STOK MIN':>10} | {'STATUS':<10}")
+            print("-" * 101)
+        else:
+            print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STATUS':<10}")
+            print("-" * 88)
+        for _, aidi, detail in baris:
+            harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
+            status = "Aktif" if detail['Kondisi'] == 1 else "Nonaktif"
+            if dengan_minimum:
+                print(f"{aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {status if role == 'ADMIN' else '':<10}")
+            else:
+                print(f"{aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {status if role == 'ADMIN' else '':<10}")
+        print("=" * (101 if dengan_minimum else 88))
+    return tampilkan_halaman(items, cetak, judul)
+
+def tampilkan_user(data, judul="DAFTAR USER SMK MART"):
+    def cetak(baris):
+        print(f"{'ID USER':<10} | {'USERNAME':<18} | {'ROLE':<20} | {'KONDISI':<10}")
+        print("-" * 67)
+        for aidi, user in baris:
+            kondisi = "Aktif" if user.get("Kondisi", "1") == "1" else "Nonaktif"
+            print(f"{aidi:<10} | {user['Username']:<18} | {user['Role']:<20} | {kondisi:<10}")
+        print("=" * 67)
+    return tampilkan_halaman(list(data.items()), cetak, judul, bersihkan=False)
+
 
 def hashPewe(password):
     salt = secrets.token_bytes(16)
@@ -396,14 +477,8 @@ def kurangibarang(Aidinya, dikurangi):
 def hapusbarang():
     print("\n== Nonaktifkan Barang ==")
     cekdata = spilstok("BIASA")
-    for Kategorina, isikategori in cekdata.items():
-        print(f"\n>> Kategori: {Kategorina.upper()}")
-        print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STOK MIN':>10} | {'STATUS':<10}")
-        print("-"*101)
-        for Aidi, detail in isikategori.items():
-            harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
-            status = "Nonaktif"
-            print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {status:<10}")
+    tampilkan_barang(cekdata, "BIASA", "DAFTAR BARANG UNTUK DINONAKTIFKAN", True)
+
     Aidibarang = input("Masukkan ID barang yang ingin dinonaktifkan:\n").upper()
     ditemukan = False
     for isikategori in cekdata.values():
@@ -699,14 +774,7 @@ def laba(tanggal):
 def diaktifkan():
     print("\n== Pulihkan Barang ==")
     cekdata = spilstok("EXC")
-    for Kategori, isikategori in cekdata.items():
-        print(f"\n>> Kategori: {Kategori.upper()}")
-        print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STOK MIN':>10} | {'STATUS':<10}")
-        print("-"*101)
-        for Aidi, detail in isikategori.items():
-            harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
-            status = "Nonaktif"
-            print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {status:<10}")
+    tampilkan_barang(cekdata, "ADMIN", "DAFTAR BARANG UNTUK DIPULIHKAN", True)
 
     Aidibarang = input("Masukkan ID barang yang ingin dipulihkan:\n").upper()
     ditemukan = False
@@ -722,13 +790,8 @@ def diaktifkan():
 
 def diaktifkanuser():
     while True:
-        print("\n====================== DAFTAR USER SMK MART ======================")
-        print(f"{'ID USER':<10} | {'USERNAME':<18} | {'ROLE':<20} | {'KONDISI':<10}")
-        print("-"*67)
         daftar=spiluser("Neg")
-        for idi, lainnya in daftar.items():
-            kondisiuser="Nonaktif"
-            print(f"{idi:<10} | {lainnya['Username']:<18} | {lainnya['Role']:<20} | {kondisiuser:<10}")
+        tampilkan_user(daftar, "DAFTAR USER NONAKTIF SMK MART")
         aidi=input("Masukkan Aidi yang akan diaktifkan usernya!\n0 untuk keluar\n").strip()
         if aidi=="0":
             return

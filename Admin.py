@@ -27,12 +27,7 @@ def punyaadmin(username, role):
                                 if len(daftaruser)<=0:
                                     print("Tidak terdapat User!")
                                 else:
-                                    print("\n====================== DAFTAR USER SMK MART ======================")
-                                    print(f"{'ID USER':<10} | {'USERNAME':<18} | {'ROLE':<20} | {'KONDISI':<10}")
-                                    print("-"*67)
-                                    for AidiUser, lainUser in daftaruser.items():
-                                        kondisiuser = "Aktif"
-                                        print(f"{AidiUser:<10} | {lainUser['Username']:<18} | {lainUser['Role']:<20} | {kondisiuser:<10}")
+                                    KerjaDatabase.tampilkan_user(daftaruser)
                                 print("="*67+"\n")
                             elif pilih.strip()== "2":
                                 KerjaDatabase.tambahuser()
@@ -40,12 +35,7 @@ def punyaadmin(username, role):
                                 if len(daftaruser)<=0:
                                     print("Tidak terdapat User!")
                                 else:
-                                    print("\n====================== DAFTAR USER SMK MART ======================")
-                                    print(f"{'ID USER':<10} | {'USERNAME':<18} | {'ROLE':<20} | {'KONDISI':<10}")
-                                    print("-"*67)
-                                    for AidiUser, lainUser in daftaruser.items():
-                                        kondisiuser = "Aktif"
-                                        print(f"{AidiUser:<10} | {lainUser['Username']:<18} | {lainUser['Role']:<20} | {kondisiuser:<10}")
+                                    KerjaDatabase.tampilkan_user(daftaruser)
                                 KerjaDatabase.hapususer()
                             elif pilih.strip()=="4":
                                 KerjaDatabase.diaktifkanuser()

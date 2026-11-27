@@ -32,51 +32,24 @@ def Kasirnya(role,username):
                 kata_kunci = input("Masukkan nama/ID barang yang dicari (0 untuk lihat semua)\n999. Keluar\n\n").lower()
                 f = KerjaDatabase.spilstok(role)
                 if kata_kunci=="0":
-                    for kat, det in f.items():
-                        print(f"\n>> Kategori: {kat.upper()}")
-                        print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STATUS':<10}")
-                        print("-"*88)
-                        for idi, laina in det.items():
-                            harga = f"Rp {laina['Harga']:,.0f}".replace(",", ".")
-                            status = "Aktif" if laina['Kondisi']==1 else "Nonaktif"
-                            if role=="ADMIN":
-                                print(f"{idi:<10} | {laina['Nama Barang']:<30} | {laina['Stok']:>6} pcs | {harga:>16} | {status:<10}")
-                            else:
-                                print(f"{idi:<10} | {laina['Nama Barang']:<30} | {laina['Stok']:>6} pcs | {harga:>16} | {'':<10}")
+                    KerjaDatabase.tampilkan_barang(f, role, "DAFTAR SELURUH BARANG SMK MART")
                 elif kata_kunci.strip()=="999":
                     break
 
                 else:
-                    ditemukan = False
+                    hasil_cari = {}
                     for kat, det in f.items():
-                        kategori_ditemukan = False
                         for idi, laina in det.items():
                             if kata_kunci in idi.lower() or kata_kunci in laina['Nama Barang'].lower():
-                                if kategori_ditemukan==False:
-                                    print(f"\n>> Kategori: {kat.upper()}")
-                                    print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STATUS':<10}")
-                                    print("-"*88)
-                                    kategori_ditemukan = True
-                                harga = f"Rp {laina['Harga']:,.0f}".replace(",", ".")
-                                status = "Aktif" if laina['Kondisi']==1 else "Nonaktif"
-                                if role=="ADMIN":
-                                    print(f"{idi:<10} | {laina['Nama Barang']:<30} | {laina['Stok']:>6} pcs | {harga:>16} | {status:<10}")
-                                else:
-                                    print(f"{idi:<10} | {laina['Nama Barang']:<30} | {laina['Stok']:>6} pcs | {harga:>16} | {'':<10}")
-                                ditemukan = True
-                    if ditemukan==False:
+                                hasil_cari.setdefault(kat, {})[idi] = laina
+                    if hasil_cari:
+                        KerjaDatabase.tampilkan_barang(hasil_cari, role, "HASIL PENCARIAN BARANG")
+                    else:
                         print("Barang tidak ditemukan!")
         elif opsi == "2":
             Belilagi=True
             inilah=KerjaDatabase.spilstok("KASIR")
-            for kate, isine in inilah.items():
-                print(f"\n>> Kategori: {kate.upper()}")
-                print(f"{'ID BARANG':<10} | {'NAMA BARANG':<30} | {'STOK':>10} | {'HARGA':>16} | {'STOK MIN':>10} | {'STATUS':<10}")
-                print("-"*101)
-                for Aidi, detail in isine.items():
-                    harga = f"Rp {detail['Harga']:,.0f}".replace(",", ".")
-                    status = "Aktif"
-                    print(f"{Aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {detail['Stok Minimum']:>10} | {status:<10}")
+            KerjaDatabase.tampilkan_barang(inilah, role, "DAFTAR BARANG UNTUK PENJUALAN", True)
             while Belilagi==True:
                 idygy = input("Masukkan ID Barang yang dibeli oleh pelanggan!\n").upper().strip()
                 while not idygy.isalnum():
