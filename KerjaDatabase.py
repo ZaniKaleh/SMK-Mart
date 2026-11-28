@@ -24,7 +24,8 @@ def bersihkan_layar():
 
 def tampilkan_halaman(data, cetak_baris, judul="DAFTAR DATA",
                       ukuran_halaman=UKURAN_HALAMAN,
-                      keterangan="0/Enter = Lanjut",
+                      keterangan="0 = Keluar",
+                      pilihan_langsung=False,
                       bersihkan=True):
     data = list(data)
     if not data:
@@ -56,14 +57,23 @@ def tampilkan_halaman(data, cetak_baris, judul="DAFTAR DATA",
                 halaman -= 1
             else:
                 print("Sudah berada di halaman pertama.")
-        elif pilihan in ("", "0"):
+        elif pilihan == "0":
+            if bersihkan:
+                bersihkan_layar()
+            return "0"
+        elif pilihan == "" and not pilihan_langsung:
+            if bersihkan:
+                bersihkan_layar()
+            return ""
+        elif pilihan_langsung and pilihan:
             if bersihkan:
                 bersihkan_layar()
             return pilihan
         else:
-            print("Input tidak valid. Gunakan N, P, 0, atau Enter.")
+            print("Input tidak valid. Gunakan N, P, 0, atau masukkan ID barang.")
 
-def tampilkan_barang(data, role="BIASA", judul="DAFTAR BARANG", dengan_minimum=False):
+def tampilkan_barang(data, role="BIASA", judul="DAFTAR BARANG", dengan_minimum=False,
+                     pilihan_langsung=False, keterangan="0 = Keluar"):
     items = []
     for kategori, isi in data.items():
         for aidi, detail in isi.items():
@@ -83,7 +93,9 @@ def tampilkan_barang(data, role="BIASA", judul="DAFTAR BARANG", dengan_minimum=F
             else:
                 print(f"{aidi:<10} | {detail['Nama Barang']:<30} | {detail['Stok']:>6} pcs | {harga:>16} | {status if role == 'ADMIN' else '':<10}")
         print("=" * (101 if dengan_minimum else 88))
-    return tampilkan_halaman(items, cetak, judul)
+    return tampilkan_halaman(items, cetak, judul,
+                             pilihan_langsung=pilihan_langsung,
+                             keterangan=keterangan)
 
 def tampilkan_user(data, judul="DAFTAR USER SMK MART"):
     def cetak(baris):

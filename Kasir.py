@@ -49,9 +49,19 @@ def Kasirnya(role,username):
         elif opsi == "2":
             Belilagi=True
             inilah=KerjaDatabase.spilstok("KASIR")
-            KerjaDatabase.tampilkan_barang(inilah, role, "DAFTAR BARANG UNTUK PENJUALAN", True)
+            id_dari_halaman = KerjaDatabase.tampilkan_barang(
+                inilah, role, "DAFTAR BARANG UNTUK PENJUALAN", True,
+                pilihan_langsung=True,
+                keterangan="0 = Keluar ke menu kasir"
+            )
             while Belilagi==True:
-                idygy = input("Masukkan ID Barang yang dibeli oleh pelanggan!\n").upper().strip()
+                if id_dari_halaman == "0":
+                    break
+                if id_dari_halaman:
+                    idygy = id_dari_halaman.upper().strip()
+                    id_dari_halaman = None
+                else:
+                    idygy = input("Masukkan ID Barang yang dibeli oleh pelanggan!\n").upper().strip()
                 while not idygy.isalnum():
                     idygy=input("Hanya masukkan huruf dan angka!").upper().strip()
                 hasilbeli = KerjaDatabase.serch(idygy, role)

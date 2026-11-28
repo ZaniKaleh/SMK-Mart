@@ -6,7 +6,7 @@ alat tulis|ATS005|Penggaris|18|5000|10|1
 sembako|SMB001|Beras|20|16000|10|1
 sembako|SMB002|Minyak|25|7000|10|1
 sembako|SMB003|Gula Pasir|20|5000|10|1
-alat kebersihan|AKN001|Sabun Mandi (Batang)|17|2500|10|1
+alat kebersihan|AKN001|Sabun Mandi (Batang)|15|2500|10|1
 alat kebersihan|AKN002|Sabun Cuci Piring|12|3000|10|1
 alat kebersihan|AKN003|Sabun Cuci Baju (5 Sachet)|20|5000|10|1
 alat kebersihan|AKN004|Shampoo (5 Sachet)|40|2500|10|1
