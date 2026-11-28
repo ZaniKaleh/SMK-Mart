@@ -121,8 +121,8 @@ def Kasirnya(role,username):
                                                             print("Jumlah yang dikurangi melebihi jumlah di keranjang!")
                                                     if temu:
                                                         break
-                                                if not temu:
-                                                    print("Tidak terdapat barang dengan ID terebut di keranjangmu!")
+                                            if not temu:
+                                                print("Tidak terdapat barang dengan ID terebut di keranjangmu!")
 
                                     case _:
                                         print("Input tidak valid!")

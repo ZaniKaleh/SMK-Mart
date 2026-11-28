@@ -459,7 +459,7 @@ def kurangibarang(Aidinya, dikurangi):
         for Idikan, ditel in detailygy.items():
             if Idikan==Aidinya:
                 if ditel['Stok']==dikurangi:
-                    yakin=input("Anda yakin ingin menghapus barang ini secara permanen? (y?N)\n").upper().strip()
+                    yakin=input("Anda yakin ingin menghapus barang ini secara permanen? (y/N)\n").upper().strip()
                     while yakin!="Y" and yakin!="N":
                         yakin=input("Masukkan y atau N!\n")
                     if yakin=="Y":
